@@ -1,0 +1,136 @@
+.productos {
+  padding: 5rem 0;
+  background: #f1f3f7;
+}
+
+.eyebrow-light {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #7a869a;
+}
+
+.productos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.productos h2 {
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 1.1;
+  color: var(--navy);
+}
+
+.productos h2 span { color: var(--red); }
+
+.productos-header p { margin-top: 0.8rem; color: #7c8798; }
+
+.carrito {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--navy);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.carrito b {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.7rem;
+}
+
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.producto {
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px 8px 28px 8px;
+  overflow: hidden;
+}
+
+.producto-img { position: relative; }
+
+.producto-img img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 0.4rem 0.8rem;
+  background: #fff;
+  border-radius: 0 0 12px 0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1fa971;
+}
+
+.producto-body { padding: 1.2rem 1.5rem 1.5rem; }
+
+.producto-body small { font-size: 0.7rem; color: #7c8798; }
+
+.producto-body h3 {
+  margin: 0.5rem 0 1.5rem;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.5rem;
+  color: var(--navy);
+}
+
+.producto-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.producto-footer strong {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.7rem;
+  color: #0a3d7a;
+}
+
+.producto-footer button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1rem;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font: 700 0.75rem "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .productos { padding: 3.5rem 0; }
+  .productos-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+  .productos-grid { grid-template-columns: 1fr; }
+  .producto-img img { height: 230px; }
+}

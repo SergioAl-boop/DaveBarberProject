@@ -1,0 +1,82 @@
+.contacto {
+  padding: 5rem 0;
+  background: var(--blue);
+  color: #fff;
+}
+
+.contacto-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 3rem;
+}
+
+.contacto h2 {
+  margin-bottom: 1rem;
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  line-height: 1.1;
+}
+
+.contacto-texto p {
+  margin-bottom: 2rem;
+  max-width: 420px;
+  line-height: 1.6;
+  color: #cfe0f5;
+}
+
+.contacto .btn-primary {
+  display: inline-block;
+  padding: 1rem 1.6rem;
+  background: var(--red);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(217, 31, 46, 0.35);
+}
+
+.contacto-card {
+  padding: 1.5rem 2rem;
+  background: #fff;
+  color: var(--navy);
+  border-radius: 8px 8px 40px 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.contacto-item {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid #e5e8ef;
+}
+
+.contacto-item:last-child { border-bottom: none; }
+
+.contacto-item small {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7a869a;
+}
+
+.contacto-item strong {
+  display: block;
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  color: #0a3d7a;
+}
+
+.contacto-item a,
+.contacto-item span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--red);
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .contacto { padding: 3.5rem 0; }
+  .contacto-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
