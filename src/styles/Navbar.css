@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 85px;
+  height: 110px;
   padding: 0 2rem 0 85px;
   background: #f8f8f8;
   font-family: "DM Sans", sans-serif;
@@ -15,6 +15,7 @@
 
 .logo img {
   display: block;
+  border-radius: 15px;
   height: 80px;
 }
 
@@ -31,13 +32,29 @@
   color: #1f2a44;
   text-decoration: none;
   font-weight: 500;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  box-shadow: #1f2a44 0px 0px 0px 0px inset;
   font-size: 0.95rem;
   transition: color 0.2s;
+}
+
+.btn-login{
+    background: blue;
+  color: #fff;
+  text-decoration: none;
+  padding: 1rem 1.4rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 24px rgba(217, 31, 46, 0.3);
+  transition: transform 0.2s;
 }
 
 .nav-links a:hover,
 .login:hover {
   color: #d91f2e;
+  
 }
 
 .nav-actions {
@@ -133,5 +150,22 @@
     display: block;
     padding: 0.9rem 0;
     border-bottom: 1px solid #e5e8ef;
+  }
+}
+
+.nav-login-mobile { display: none; }
+
+@media (max-width: 900px) {
+  .nav-login-mobile { display: block; }
+
+  .nav-login-mobile button {
+    width: 100%;
+    padding: 0.9rem 0;
+    background: none;
+    border: none;
+    text-align: left;
+    font: 500 0.95rem "DM Sans", sans-serif;
+    color: #1f2a44;
+    cursor: pointer;
   }
 }

@@ -37,7 +37,7 @@ export default function Hero() {
 
       <div className="hero-image">
         <img
-          src="https://tvazteca-adnnoticias-prod.web.arc-cdn.net/resizer/v2/JOOORTRMV5BDFOIJF5MDOBGVYE.jpg?auth=8883bcd208c844645e9c47017138ae1a176b4d7fdda4d70517b0457aefae25e6&width=800&height=963"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTY5yFLjHNo2-oIt-1-618Gq13w7JfdTmbHFRtNGyUnpP84oDl7m2HtnHWH&s=10"
           alt="Barbero trabajando"
         />
 

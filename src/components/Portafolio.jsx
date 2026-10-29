@@ -2,10 +2,10 @@ import { useState } from "react";
 import "../styles/Portafolio.css";
 
 const cortes = [
-  { id: 1, nombre: "Skin fade", cat: "fade", img: "/portafolio/skin-fade.jpg" },
-  { id: 2, nombre: "Corte clásico", cat: "básico", img: "/portafolio/clasico.jpg" },
-  { id: 3, nombre: "Barba definida", cat: "barba", img: "/portafolio/barba.jpg" },
-  { id: 4, nombre: "Taper fade", cat: "fade", img: "/portafolio/taper-fade.jpg" },
+  { id: 1, nombre: "Skin fade", cat: "fade", img: "https://cdn.shopify.com/s/files/1/0029/0868/4397/files/french-crop-skin-fade-haircut-men.png?v=1757673694" },
+  { id: 2, nombre: "Corte clásico", cat: "básico", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEMMvdOs2yVRSc8ack-jwRh9XW1KbJFBO4n4ek4y5_vQFjoMulUHvwkveJ&s=10" },
+  { id: 3, nombre: "Barba definida", cat: "barba", img: "https://i.ytimg.com/vi/I559LMpDmx0/maxresdefault.jpg" },
+  { id: 4, nombre: "Taper fade", cat: "fade", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQynbBg-Ch56wfYfLtFidutkKW_BKJGMdABq3qAgKf9lwt62o78B6PPjj0&s=10" },
 ];
 
 const filtros = ["todos", "fade", "básico", "barba"];
