@@ -41,14 +41,6 @@ export default function Hero() {
           alt="Barbero trabajando"
         />
 
-        <Link to="/reservas" className="next-slot">
-          <span className="dot" />
-          <div>
-            <small>PRÓXIMO ESPACIO</small>
-            <strong>Hoy · 4:30 PM</strong>
-          </div>
-          <span className="arrow">›</span>
-        </Link>
       </div>
     </section>
   );

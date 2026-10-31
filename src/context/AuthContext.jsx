@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext(null);
@@ -7,13 +7,13 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(undefined);
   const [perfil, setPerfil] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const registrando = useRef(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-    });
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
 
     const { data: sub } = supabase.auth.onAuthStateChange((_evento, s) => {
+      if (registrando.current) return;
       setSession(s);
     });
 
@@ -32,11 +32,12 @@ export function AuthProvider({ children }) {
     }
 
     let activo = true;
+    setCargando(true);
     supabase
       .from("perfiles")
       .select("*")
       .eq("id", userId)
-      .single()
+      .maybeSingle()
       .then(({ data }) => {
         if (!activo) return;
         setPerfil(data);
@@ -46,7 +47,7 @@ export function AuthProvider({ children }) {
     return () => { activo = false; };
   }, [session === undefined, userId]);
 
-  const login = async (email, password, modo) => {
+  const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error("Correo o contraseña incorrectos");
 
@@ -54,25 +55,31 @@ export function AuthProvider({ children }) {
       .from("perfiles")
       .select("*")
       .eq("id", data.user.id)
-      .single();
+      .maybeSingle();
 
-    if (modo === "admin" && p?.rol !== "admin") {
+    if (!p) {
       await supabase.auth.signOut();
-      throw new Error("Esta cuenta no tiene acceso de administrador");
+      throw new Error("Tu perfil no está listo. Contacta al estudio.");
     }
+
     setPerfil(p);
     return p;
   };
 
   const registrar = async ({ nombre, telefono, email, password }) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { nombre, telefono } },
-    });
-    if (error) throw new Error(error.message);
-    if (!data.session) throw new Error("Revisa tu correo para confirmar tu cuenta");
-    return { rol: "cliente" };
+    registrando.current = true;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { nombre, telefono } },
+      });
+      if (error) throw new Error(error.message);
+      await supabase.auth.signOut();
+    } finally {
+      registrando.current = false;
+      setSession(null);
+    }
   };
 
   const logout = () => supabase.auth.signOut();
