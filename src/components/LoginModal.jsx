@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logodave.jpeg";
 import "../styles/LoginModal.css";
 
@@ -9,11 +11,39 @@ const Arrow = () => (
 );
 
 export default function LoginModal({ onClose }) {
-  const [paso, setPaso] = useState("elegir");
+  const { login, registrar } = useAuth();
+  const navigate = useNavigate();
 
-  const enviar = (e) => {
+  const [paso, setPaso] = useState("elegir");
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [form, setForm] = useState({ nombre: "", telefono: "", email: "", password: "" });
+
+  const cambiar = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const ir = (p) => {
+    setError("");
+    setPaso(p);
+  };
+
+  const enviar = async (e) => {
     e.preventDefault();
-    onClose();
+    setError("");
+    setCargando(true);
+
+    try {
+      const usuario =
+        paso === "registro"
+          ? await registrar(form)
+          : await login(form.email, form.password, paso);
+
+      onClose();
+      if (usuario?.rol === "admin") navigate("/admin");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -33,7 +63,7 @@ export default function LoginModal({ onClose }) {
               <h2>¿Cómo quieres entrar?</h2>
               <p className="modal-sub">Elige tu tipo de cuenta para continuar.</p>
 
-              <button className="opcion" onClick={() => setPaso("cliente")}>
+              <button className="opcion" onClick={() => ir("cliente")}>
                 <span className="opcion-icono">👤</span>
                 <div>
                   <strong>Soy Cliente</strong>
@@ -42,7 +72,7 @@ export default function LoginModal({ onClose }) {
                 <span>›</span>
               </button>
 
-              <button className="opcion" onClick={() => setPaso("admin")}>
+              <button className="opcion" onClick={() => ir("admin")}>
                 <span className="opcion-icono rojo">✂</span>
                 <div>
                   <strong>Soy el Barbero</strong>
@@ -58,7 +88,7 @@ export default function LoginModal({ onClose }) {
               <button
                 type="button"
                 className="volver"
-                onClick={() => setPaso(paso === "registro" ? "cliente" : "elegir")}
+                onClick={() => ir(paso === "registro" ? "cliente" : "elegir")}
               >
                 ← Volver
               </button>
@@ -84,31 +114,33 @@ export default function LoginModal({ onClose }) {
               {paso === "registro" && (
                 <>
                   <label>Nombre completo
-                    <input type="text" placeholder="Ej. Daniel García" required />
+                    <input name="nombre" value={form.nombre} onChange={cambiar} placeholder="Ej. Daniel García" required />
                   </label>
                   <label>Teléfono
-                    <input type="tel" placeholder="55 0000 0000" required />
+                    <input name="telefono" type="tel" value={form.telefono} onChange={cambiar} placeholder="55 0000 0000" required />
                   </label>
                 </>
               )}
 
               <label>Correo electrónico
-                <input type="email" placeholder="nombre@correo.com" required />
+                <input name="email" type="email" value={form.email} onChange={cambiar} placeholder="nombre@correo.com" required />
               </label>
 
               <label>Contraseña
-                <input type="password" placeholder="Mínimo 8 caracteres" minLength={8} required />
+                <input name="password" type="password" value={form.password} onChange={cambiar} placeholder="Mínimo 8 caracteres" required />
               </label>
 
-              <button className="btn-entrar">
-                {paso === "registro" ? "Crear cuenta y reservar" : "Entrar"}
+              {error && <p className="modal-error">{error}</p>}
+
+              <button className="btn-entrar" disabled={cargando}>
+                {cargando ? "Procesando..." : paso === "registro" ? "Crear cuenta y reservar" : "Entrar"}
                 <Arrow />
               </button>
 
               {paso === "cliente" && (
                 <p className="modal-pie">
                   ¿Aún no tienes cuenta?{" "}
-                  <button type="button" onClick={() => setPaso("registro")}>Regístrate</button>
+                  <button type="button" onClick={() => ir("registro")}>Regístrate</button>
                 </p>
               )}
             </form>
