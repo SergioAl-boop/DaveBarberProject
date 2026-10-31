@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useReserva } from "../context/ReservaContext";
 import "../styles/Contactos.css";
 
 const IconoUbicacion = () => (
@@ -41,17 +42,21 @@ const datos = [
     label: "WhatsApp",
     valor: "2871554566",
     extra: "Enviar mensaje",
-    href: "https://wa.me/2871554566",
+    href: "https://wa.me/522871554566",
   },
   {
     icono: <IconoReloj />,
     label: "Horario",
     valor: "Mar–Sab 10:00 AM – 08:00 PM",
     extra: "Dom 12:00 PM – 06:00 PM",
-  }
+  },
 ];
 
 export default function Contacto() {
+  const { user } = useAuth();
+  const { abrirReserva } = useReserva();
+  const esAdmin = user?.rol === "admin";
+
   return (
     <section className="contacto">
       <div className="container contacto-grid">
@@ -65,9 +70,12 @@ export default function Contacto() {
             Agenda en línea o escríbenos. Atendemos únicamente con cita para
             darte el tiempo que mereces.
           </p>
-          <Link to="/reservas" className="btn-primary">
-            Reservar cita <IconoCalendario />
-          </Link>
+
+          {!esAdmin && (
+            <button className="btn-primary" onClick={abrirReserva}>
+              Reservar cita <IconoCalendario />
+            </button>
+          )}
         </div>
 
         <div className="contacto-card">
@@ -78,7 +86,7 @@ export default function Contacto() {
                 <small>{d.label}</small>
                 <strong>{d.valor}</strong>
                 {d.href ? (
-                  <a href={d.href}>{d.extra}</a>
+                  <a href={d.href} target="_blank" rel="noreferrer">{d.extra}</a>
                 ) : (
                   <em>{d.extra}</em>
                 )}

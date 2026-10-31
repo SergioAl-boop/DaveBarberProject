@@ -7,6 +7,7 @@ import AdminLayout from "./components/AdminLayout";
 import Resumen from "./pages/admin/Resumen";
 import Proximamente from "./pages/admin/Proximamente";
 import { AdminProductos, AdminPortafolio } from "./pages/admin/Catalogos";
+import Agenda from "./pages/admin/Agenda";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
 
       <Route path="/admin" element={<RutaAdmin><AdminLayout /></RutaAdmin>}>
         <Route index element={<Resumen />} />
-        <Route path="agenda" element={<Proximamente titulo="Agenda" />} />
+        <Route path="agenda" element={<Agenda />} />
         <Route path="clientes" element={<Proximamente titulo="Clientes" />} />
         <Route path="servicios" element={<Proximamente titulo="Servicios" />} />
         <Route path="productos" element={<AdminProductos />} />

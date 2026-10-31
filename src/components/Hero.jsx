@@ -1,7 +1,12 @@
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useReserva } from "../context/ReservaContext";
 import "../styles/Hero.css";
 
 export default function Hero() {
+  const { user } = useAuth();
+  const { abrirReserva } = useReserva();
+  const esAdmin = user?.rol === "admin";
+
   return (
     <section className="hero">
       <div className="hero-text">
@@ -19,8 +24,12 @@ export default function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <Link to="/reservas" className="btn-primary">Aparta con $100 →</Link>
-          <Link to="/servicios" className="btn-secondary">Ver servicios</Link>
+          {!esAdmin && (
+            <button className="btn-primary" onClick={abrirReserva}>
+              Aparta con $100 →
+            </button>
+          )}
+          <a href="#servicios" className="btn-secondary">Ver servicios</a>
         </div>
 
         <div className="stats">
@@ -40,7 +49,6 @@ export default function Hero() {
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTY5yFLjHNo2-oIt-1-618Gq13w7JfdTmbHFRtNGyUnpP84oDl7m2HtnHWH&s=10"
           alt="Barbero trabajando"
         />
-
       </div>
     </section>
   );

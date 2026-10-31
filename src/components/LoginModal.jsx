@@ -10,7 +10,7 @@ const Arrow = () => (
   </svg>
 );
 
-export default function LoginModal({ onClose }) {
+export default function LoginModal({ onClose, onLogin }) {
   const { login, registrar } = useAuth();
   const navigate = useNavigate();
 
@@ -45,7 +45,8 @@ export default function LoginModal({ onClose }) {
 
       const usuario = await login(form.email, form.password);
       onClose();
-      navigate(usuario?.rol === "admin" ? "/admin" : "/");
+      if (usuario?.rol === "admin") navigate("/admin");
+      else onLogin?.();
     } catch (err) {
       setError(err.message);
     } finally {
