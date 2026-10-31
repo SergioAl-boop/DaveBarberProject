@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import Cuenta from "./pages/Cuenta";
 import RutaAdmin from "./components/RutaAdmin";
+import RutaCliente from "./components/Rutacliente";
 import AdminLayout from "./components/AdminLayout";
 import Resumen from "./pages/admin/Resumen";
 import Proximamente from "./pages/admin/Proximamente";
@@ -10,6 +12,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+
+      <Route path="/cuenta" element={<RutaCliente><Cuenta /></RutaCliente>} />
 
       <Route path="/admin" element={<RutaAdmin><AdminLayout /></RutaAdmin>}>
         <Route index element={<Resumen />} />
