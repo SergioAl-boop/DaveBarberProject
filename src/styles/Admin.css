@@ -1,0 +1,261 @@
+.adm {
+  display: flex;
+  min-height: 100vh;
+  font-family: "DM Sans", sans-serif;
+  color: var(--navy);
+}
+
+/* ---------- SIDEBAR ---------- */
+.adm-side {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 230px;
+  height: 100vh;
+  padding: 2rem 1rem;
+  background: var(--navy);
+  flex-shrink: 0;
+}
+
+.adm-logo { width: 100%; max-width: 135px; margin: 3rem auto 1.5rem; border-radius: 4px; }
+
+.adm-badge {
+  display: block;
+  margin: 0 0 2.5rem;
+  padding: 0.5rem;
+  background: rgba(217, 31, 46, 0.18);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ee6a78;
+}
+
+.adm-nav { display: grid; gap: 0.3rem; }
+
+.adm-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 0.9rem;
+  border-left: 3px solid transparent;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #8fb0dc;
+  text-decoration: none;
+}
+
+.adm-nav a:hover { color: #fff; }
+
+.adm-nav a.active {
+  background: rgba(255, 255, 255, 0.08);
+  border-left-color: var(--red);
+  color: #fff;
+  font-weight: 700;
+}
+
+.adm-salir {
+  margin-top: auto;
+  padding: 0.8rem 0.9rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font: 400 0.8rem "DM Sans", sans-serif;
+  color: #8fb0dc;
+  cursor: pointer;
+}
+
+.adm-salir:hover { color: #fff; }
+
+/* ---------- CONTENIDO ---------- */
+.adm-main {
+  flex: 1;
+  min-width: 0;
+  padding: 4rem 3rem;
+  background: #f1f3f7;
+}
+
+.adm-main > * { max-width: 840px; margin-left: auto; margin-right: auto; }
+
+.adm-head { margin-bottom: 2rem; }
+
+.adm-head span {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #1c4b8f;
+}
+
+.adm-head h1 {
+  margin: 0.8rem 0 0.5rem;
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.adm-head p { font-size: 0.85rem; color: #7c8798; }
+
+.adm-card {
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px 8px 24px 8px;
+}
+
+.vacio { padding: 2rem; text-align: center; font-size: 0.9rem; color: #7c8798; }
+
+/* ---------- STATS ---------- */
+.adm-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.stat { padding: 1.3rem 1.5rem; }
+
+.stat small {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7c8798;
+}
+
+.stat strong {
+  display: block;
+  margin: 0.8rem 0 0.4rem;
+  font-family: "Oswald", sans-serif;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.stat span { font-size: 0.7rem; color: #1c8a64; }
+.stat.alerta { border-top: 3px solid var(--red); }
+.stat.alerta span { color: #7c8798; }
+
+/* ---------- AGENDA ---------- */
+.agenda { margin-top: 1.2rem; overflow: hidden; }
+
+.agenda-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.agenda-top h2 { font-family: "Oswald", sans-serif; font-size: 1.4rem; }
+.agenda-top span { font-family: "Oswald", sans-serif; font-size: 1rem; }
+
+.cita {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e8ef;
+}
+
+.cita-hora { width: 52px; font-family: "Oswald", sans-serif; font-size: 1.2rem; }
+
+.cita-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: #e8edf5;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.cita-info { flex: 1; min-width: 0; }
+.cita-info b { display: block; font-size: 0.85rem; }
+.cita-info small { font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: #7c8798; }
+
+.cita select {
+  padding: 0.45rem 0.6rem;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 6px;
+  font: 400 0.7rem "DM Sans", sans-serif;
+  color: var(--navy);
+}
+
+.cita-flecha { font-size: 1.2rem; }
+
+/* ---------- FORMULARIOS (Productos / Portafolio) ---------- */
+.adm-main .admin-card {
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px 8px 24px 8px;
+}
+
+.admin-card h2 { margin-bottom: 1rem; font-family: "Oswald", sans-serif; }
+.admin-card form { display: grid; gap: 0.7rem; margin-bottom: 1.5rem; }
+
+.admin-card input,
+.admin-card select {
+  padding: 0.7rem;
+  border: 1px solid #dfe5ea;
+  border-radius: 6px;
+  font: 400 0.85rem "DM Sans", sans-serif;
+}
+
+.admin-card form button,
+.admin-lista button {
+  padding: 0.7rem 1rem;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font: 700 0.8rem "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+.admin-lista button { background: var(--red); }
+.admin-msg { font-size: 0.85rem; }
+.admin-lista { display: grid; gap: 0.6rem; list-style: none; }
+
+.admin-lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem;
+  border: 1px solid #eef0f4;
+  border-radius: 8px;
+}
+
+.admin-lista img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
+.admin-lista span { flex: 1; font-size: 0.85rem; }
+
+/* ---------- MÓVIL ---------- */
+@media (max-width: 900px) {
+  .adm { flex-direction: column; }
+
+  .adm-side {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    height: auto;
+    padding: 0.8rem 1rem;
+    overflow-x: auto;
+  }
+
+  .adm-logo { width: 60px; margin: 0; }
+  .adm-badge { display: none; }
+  .adm-nav { display: flex; gap: 0.2rem; }
+  .adm-nav a { padding: 0.6rem 0.7rem; white-space: nowrap; border-left: none; }
+  .adm-salir { margin: 0 0 0 auto; white-space: nowrap; }
+
+  .adm-main { padding: 2rem 1rem; }
+  .adm-stats { grid-template-columns: 1fr; }
+  .cita { flex-wrap: wrap; }
+  .cita-flecha { display: none; }
+}

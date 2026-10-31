@@ -1,59 +1,84 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext(null);
 
-const ADMIN = {
-  id: 1,
-  nombre: "Dave",
-  email: "dave@barberia.com",
-  password: "Admin12345",
-  rol: "admin",
-};
-
-const leerClientes = () => JSON.parse(localStorage.getItem("clientes") || "[]");
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() =>
-    JSON.parse(localStorage.getItem("user") || "null")
-  );
+  const [session, setSession] = useState(undefined);
+  const [perfil, setPerfil] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
-  const guardarSesion = (u) => {
-    const { password, ...seguro } = u;
-    localStorage.setItem("user", JSON.stringify(seguro));
-    setUser(seguro);
-    return seguro;
-  };
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_evento, s) => {
+      setSession(s);
+    });
+
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const userId = session?.user?.id;
+
+  useEffect(() => {
+    if (session === undefined) return;
+
+    if (!userId) {
+      setPerfil(null);
+      setCargando(false);
+      return;
+    }
+
+    let activo = true;
+    supabase
+      .from("perfiles")
+      .select("*")
+      .eq("id", userId)
+      .single()
+      .then(({ data }) => {
+        if (!activo) return;
+        setPerfil(data);
+        setCargando(false);
+      });
+
+    return () => { activo = false; };
+  }, [session === undefined, userId]);
 
   const login = async (email, password, modo) => {
-    const todos = [ADMIN, ...leerClientes()];
-    const encontrado = todos.find(
-      (u) => u.email === email && u.password === password
-    );
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw new Error("Correo o contraseña incorrectos");
 
-    if (!encontrado) throw new Error("Correo o contraseña incorrectos");
-    if (modo === "admin" && encontrado.rol !== "admin")
+    const { data: p } = await supabase
+      .from("perfiles")
+      .select("*")
+      .eq("id", data.user.id)
+      .single();
+
+    if (modo === "admin" && p?.rol !== "admin") {
+      await supabase.auth.signOut();
       throw new Error("Esta cuenta no tiene acceso de administrador");
-
-    return guardarSesion(encontrado);
+    }
+    setPerfil(p);
+    return p;
   };
 
   const registrar = async ({ nombre, telefono, email, password }) => {
-    const clientes = leerClientes();
-    if (email === ADMIN.email || clientes.some((c) => c.email === email))
-      throw new Error("Ese correo ya está registrado");
-
-    const nuevo = { id: Date.now(), nombre, telefono, email, password, rol: "cliente" };
-    localStorage.setItem("clientes", JSON.stringify([...clientes, nuevo]));
-    return guardarSesion(nuevo);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { nombre, telefono } },
+    });
+    if (error) throw new Error(error.message);
+    if (!data.session) throw new Error("Revisa tu correo para confirmar tu cuenta");
+    return { rol: "cliente" };
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-  };
+  const logout = () => supabase.auth.signOut();
 
   return (
-    <AuthContext.Provider value={{ user, login, registrar, logout }}>
+    <AuthContext.Provider value={{ user: perfil, cargando, login, registrar, logout }}>
       {children}
     </AuthContext.Provider>
   );
