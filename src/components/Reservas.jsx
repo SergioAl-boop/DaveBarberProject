@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ReservaModal.css";
 
-const CLABE = "000 000 000000000 0";
+const CLABE = "5428 7851 0417 4759  ";
 const ANTICIPO = 100;
 const PASO_MIN = 30;
 const DIAS_VISIBLES = 14;
@@ -30,7 +30,7 @@ const Flecha = () => (
   </svg>
 );
 
-export default function ReservaModal({ onClose }) {
+export default function Reservas({ onClose }) {
   const { user } = useAuth();
   const navigate = useNavigate();
 

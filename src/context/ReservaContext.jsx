@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthContext";
 import LoginModal from "../components/LoginModal";
-import ReservaModal from "../components/ReservaModal";
+import Reservas from "../components/Reservas";
 
 const ReservaContext = createContext(null);
 
@@ -37,7 +37,7 @@ export function ReservaProvider({ children }) {
       {loginOpen && (
         <LoginModal onClose={() => setLoginOpen(false)} onLogin={alIniciarSesion} />
       )}
-      {reservaOpen && <ReservaModal onClose={() => setReservaOpen(false)} />}
+      {reservaOpen && <Reservas onClose={() => setReservaOpen(false)} />}
     </ReservaContext.Provider>
   );
 }
