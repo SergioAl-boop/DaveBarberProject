@@ -21,15 +21,15 @@ export default function Footer() {
 
           <div>
             <h4>Horario</h4>
-            <span>Mar–Vie · 10:00–20:00</span>
-            <span>Sábado · 9:00–18:00</span>
-            <span>Dom–Lun · Cerrado</span>
+            <span>Mar–Sab · 10:00 AM–08:00 PM</span>
+            <span>Domingo · 12:00 PM–06:00 PM</span>
+            <span>Lun · Cerrado</span>
           </div>
 
           <div>
             <h4>Contacto</h4>
-            <span>WhatsApp · 55 0000 0000</span>
-            <span>Ciudad de México, MX</span>
+            <span>WhatsApp · 2871554566</span>
+            <span>Libertad 34, Agencia de Policia Esquipulas, 71232 Santa Cruz Xoxocotlán, Oax.</span>
           </div>
         </div>
 
