@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import './index.css'
 import App from './App.jsx'
+import { supabase } from "./lib/supabase";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,4 +14,4 @@ createRoot(document.getElementById('root')).render(
     </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
-) 
+)
