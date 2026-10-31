@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 
 .navbar {
@@ -8,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   height: 110px;
-  padding: 0 2rem 0 85px;
+  padding: 0 5%;
   background: #f8f8f8;
   font-family: "DM Sans", sans-serif;
 }
@@ -17,44 +18,33 @@
   display: block;
   border-radius: 15px;
   height: 80px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .nav-links {
   display: flex;
-  gap: 2.2rem;
+  align-items: center;
+  gap: 2rem;
   margin: 0 auto;
   padding: 0;
   list-style: none;
 }
 
 .nav-links a,
-.login {
+.btn-login {
   color: #1f2a44;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 0;
   border-radius: 8px;
-  box-shadow: #1f2a44 0px 0px 0px 0px inset;
   font-size: 0.95rem;
   transition: color 0.2s;
-}
-
-.btn-login{
-    background: blue;
-  color: #fff;
-  text-decoration: none;
-  padding: 1rem 1.4rem;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  box-shadow: 0 8px 24px rgba(217, 31, 46, 0.3);
-  transition: transform 0.2s;
 }
 
 .nav-links a:hover,
 .login:hover {
   color: #d91f2e;
-  
 }
 
 .nav-actions {
@@ -63,10 +53,12 @@
   gap: 1.5rem;
 }
 
-.login {
+.btn-login {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: white;
+  background: rgb(68, 68, 199);
 }
 
 .btn-reservar {
@@ -77,6 +69,7 @@
   border-radius: 10px;
   font-weight: 700;
   font-size: 0.9rem;
+  white-space: nowrap;
   box-shadow: 0 8px 24px rgba(217, 31, 46, 0.3);
   transition: transform 0.2s;
 }
@@ -100,20 +93,49 @@
 
 .menu-toggle span {
   display: block;
+  width: 24px;
   height: 2px;
   background: #1f2a44;
   border-radius: 2px;
 }
 
-@media (max-width: 900px) {
+.nav-login-mobile {
+  display: none;
+}
+
+
+@media (max-width: 1024px) {
   .navbar {
-    padding: 0 1rem;
-    height: 70px;
+    padding: 0 1.5rem;
   }
 
-  .logo img { height: 56px; }
+  .nav-links {
+    gap: 1rem;
+  }
 
-  .login { display: none; }
+  .nav-links a {
+    font-size: 0.85rem;
+  }
+
+  .btn-reservar {
+    padding: 0.8rem 1rem;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .navbar {
+    height: 75px;
+    padding: 0 1rem;
+  }
+
+  .logo img {
+    height: 55px;
+  }
+
+  .login {
+    display: none;
+  }
 
   .nav-actions {
     margin-left: auto;
@@ -127,7 +149,7 @@
 
   .menu-toggle {
     display: flex;
-    margin-left: 0.5rem;
+    margin-left: 0.3rem;
   }
 
   .nav-links {
@@ -137,6 +159,7 @@
     left: 0;
     right: 0;
     flex-direction: column;
+    align-items: stretch;
     gap: 0;
     margin: 0;
     padding: 0.5rem 1rem 1rem;
@@ -144,28 +167,58 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
   }
 
-  .nav-links.open { display: flex; }
+  .nav-links.open {
+    display: flex;
+  }
 
   .nav-links a {
     display: block;
     padding: 0.9rem 0;
+    font-size: 0.95rem;
     border-bottom: 1px solid #e5e8ef;
   }
-}
 
-.nav-login-mobile { display: none; }
-
-@media (max-width: 900px) {
-  .nav-login-mobile { display: block; }
+  .nav-login-mobile {
+    display: block;
+  }
 
   .nav-login-mobile button {
     width: 100%;
     padding: 0.9rem 0;
     background: none;
     border: none;
+    border-bottom: 1px solid #e5e8ef;
     text-align: left;
     font: 500 0.95rem "DM Sans", sans-serif;
     color: #1f2a44;
     cursor: pointer;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 65px;
+    padding: 0 0.75rem;
+  }
+
+  .logo img {
+    height: 45px;
+  }
+
+  .nav-actions {
+    gap: 0.4rem;
+  }
+
+  .btn-reservar {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.72rem;
+    border-radius: 8px;
+  }
+
+  .menu-toggle {
+    width: 35px;
+    height: 35px;
+    margin-left: 0;
   }
 }
