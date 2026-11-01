@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import BotonNotificaciones from "./BotonNotificaciones";
 import logo from "../assets/logodave.jpeg";
 import "../styles/Admin.css";
 
@@ -48,7 +49,8 @@ export default function AdminLayout() {
           ))}
         </nav>
 
-        <button className="adm-salir" onClick={salir}>Cerrar sesión</button>
+        <BotonNotificaciones className="adm-salir" />
+        <button className="adm-salir adm-salir-final" onClick={salir}>Cerrar sesión</button>
       </aside>
 
       <main className="adm-main">

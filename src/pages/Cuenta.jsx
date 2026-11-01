@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
+import BotonNotificaciones from "../components/BotonNotificaciones";
 import "../styles/Cuenta.css";
 
 const ESTADOS = {
@@ -44,7 +45,8 @@ export default function Cuenta() {
         </div>
         <div className="cuenta-acciones">
           <Link to="/">← Ver sitio</Link>
-         
+          <BotonNotificaciones className="cuenta-notif" />
+          <button onClick={salir}>Cerrar sesión</button>
         </div>
       </header>
 
