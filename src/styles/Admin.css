@@ -68,6 +68,7 @@
   cursor: pointer;
 }
 
+.adm-salir-final { margin-top: 0; }
 .adm-salir:hover { color: #fff; }
 
 /* ---------- CONTENIDO ---------- */

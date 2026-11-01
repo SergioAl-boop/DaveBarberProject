@@ -63,3 +63,14 @@
 
 .cuenta-servicio { flex: 1; }
 .cuenta-cita em { font-style: normal; font-size: 0.75rem; font-weight: 700; color: #1c4b8f; }
+
+
+.cuenta-notif {
+  padding: 0.6rem 1rem;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px;
+  font: 700 0.75rem "DM Sans", sans-serif;
+  color: var(--navy);
+  cursor: pointer;
+}

@@ -5,27 +5,43 @@ export default function Servicios() {
   const servicios = [
     {
       id: 1,
-      nombre: "FADE",
-      precio: "$200",
+      nombre: "AFEITADO & DELINEADO DE BARBA",
+      precio: "$150",
       duracion: "45 min",
       imagen:
-        "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600",
+        "/assets/images/afeitado.png",
     },
     {
       id: 2,  
-      nombre: "CORTE BÁSICO",
-      precio: "$150",
+      nombre: "DESVANECIDO (A PIEL)",
+      precio: "$200",
       duracion: "35 min",
       imagen:
-        "https://images.unsplash.com/photo-1517832606299-7ae9b720a186?w=600",
+       "/assets/images/Desvanecidopiel.png",
     },
     {
       id: 3,
-      nombre: "CORTE Y BARBA",
+      nombre: "TAPER FADE",
       precio: "$280",
       duracion: "60 min",
       imagen:
-        "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600",
+        "/assets/images/taperfade.png",
+    },
+    {
+      id: 3,
+      nombre: "CORTE ESCOLAR",
+      precio: "$130",
+      duracion: "60 min",
+      imagen:
+        "/assets/images/escolar.png",
+    },
+    {
+      id: 3,
+      nombre: "RECORTE CLASICO",
+      precio: "$150",
+      duracion: "60 min",
+      imagen:
+        "/assets/images/clasico.png",
     },
   ];
 
@@ -70,10 +86,7 @@ export default function Servicios() {
         ))}
       </div>
 
-      <div className="services-note">
-        Tu cita queda protegida. Se requiere un anticipo de $100 por
-        transferencia para confirmar.
-      </div>
+    
     </section>
   );
 }

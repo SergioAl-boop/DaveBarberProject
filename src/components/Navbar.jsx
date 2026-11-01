@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useReserva } from "../context/ReservaContext";
 import "../styles/Navbar.css";
-import logo from "../assets/logodave.jpeg";
+import logo from '../assets/logodave.jpeg';
 
 const IconoUsuario = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
