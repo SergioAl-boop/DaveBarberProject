@@ -1,18 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 import "../styles/Portafolio.css";
-
-const cortes = [
-  { id: 1, nombre: "Skin fade", cat: "fade", img: "https://cdn.shopify.com/s/files/1/0029/0868/4397/files/french-crop-skin-fade-haircut-men.png?v=1757673694" },
-  { id: 2, nombre: "Corte clásico", cat: "básico", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEMMvdOs2yVRSc8ack-jwRh9XW1KbJFBO4n4ek4y5_vQFjoMulUHvwkveJ&s=10" },
-  { id: 3, nombre: "Barba definida", cat: "barba", img: "https://i.ytimg.com/vi/I559LMpDmx0/maxresdefault.jpg" },
-  { id: 4, nombre: "Taper fade", cat: "fade", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQynbBg-Ch56wfYfLtFidutkKW_BKJGMdABq3qAgKf9lwt62o78B6PPjj0&s=10" },
-];
 
 const filtros = ["todos", "fade", "básico", "barba"];
 
 export default function Portafolio() {
+  const [cortes, setCortes] = useState([]);
   const [filtro, setFiltro] = useState("todos");
-  const visibles = filtro === "todos" ? cortes : cortes.filter(c => c.cat === filtro);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("portafolio")
+      .select("*")
+      .eq("activo", true)
+      .order("orden", { ascending: true })
+      .order("id", { ascending: true })
+      .then(({ data, error }) => {
+        if (error) console.error(error);
+        else setCortes(data || []);
+        setCargando(false);
+      });
+  }, []);
+
+  const visibles =
+    filtro === "todos" ? cortes : cortes.filter((c) => c.categoria === filtro);
 
   return (
     <section className="portafolio">
@@ -27,7 +39,7 @@ export default function Portafolio() {
           </div>
 
           <div className="filtros">
-            {filtros.map(f => (
+            {filtros.map((f) => (
               <button
                 key={f}
                 className={filtro === f ? "active" : ""}
@@ -39,14 +51,18 @@ export default function Portafolio() {
           </div>
         </div>
 
+        {!cargando && visibles.length === 0 && (
+          <p style={{ color: "#b8c2d6" }}>Aún no hay cortes en esta categoría.</p>
+        )}
+
         <div className={`portafolio-grid ${filtro === "todos" ? "full" : ""}`}>
-          {visibles.map(c => (
+          {visibles.map((c, i) => (
             <article key={c.id} className="corte">
-              <img src={c.img} alt={c.nombre} />
-              <span className="corte-num">0{c.id}</span>
+              <img src={c.imagen_url} alt={c.nombre} />
+              <span className="corte-num">0{i + 1}</span>
               <div className="corte-info">
                 <h3>{c.nombre}</h3>
-                <small>{c.cat}</small>
+                <small>{c.categoria}</small>
               </div>
             </article>
           ))}

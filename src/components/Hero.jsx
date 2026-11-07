@@ -46,7 +46,7 @@ export default function Hero() {
 
       <div className="hero-image">
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTY5yFLjHNo2-oIt-1-618Gq13w7JfdTmbHFRtNGyUnpP84oDl7m2HtnHWH&s=10"
+          src="/assets/images/principal.png"
           alt="Barbero trabajando"
         />
       </div>

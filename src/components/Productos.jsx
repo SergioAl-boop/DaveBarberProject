@@ -1,11 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "../lib/supabase";
 import "../styles/Productos.css";
-
-const productos = [
-  { nombre: "Pomada mate", detalle: "Fijación · 100 g", precio: 280, img: "https://m.media-amazon.com/images/I/714GE6IDrOL.jpg" },
-  { nombre: "Aceite para barba", detalle: "Cuidado · 30 ml", precio: 220, img: "https://m.media-amazon.com/images/I/71Ki7HRfLxL._AC_UF1000,1000_QL80_.jpg" },
-  { nombre: "Shampoo refrescante", detalle: "Limpieza · 250 ml", precio: 190, img: "https://i5-mx.walmartimages.com/asr/6e1aa1cb-2699-4ed9-a672-632c1b5e152b.15a839100d4c03c9e5ce7c86ba2ddd63.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF" },
-];
 
 const CartIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -16,7 +11,44 @@ const CartIcon = () => (
 );
 
 export default function Productos() {
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
   const [carrito, setCarrito] = useState(0);
+  const [pagina, setPagina] = useState(0);
+  const pista = useRef(null);
+
+  useEffect(() => {
+    supabase
+      .from("productos")
+      .select("*")
+      .eq("activo", true)
+      .order("id")
+      .then(({ data }) => {
+        setProductos(data || []);
+        setCargando(false);
+      });
+  }, []);
+
+  const mover = (dir) => {
+    const el = pista.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth, behavior: "smooth" });
+  };
+
+  const alScroll = () => {
+    const el = pista.current;
+    if (!el) return;
+    setPagina(Math.round(el.scrollLeft / el.clientWidth));
+  };
+
+  const irA = (i) => {
+    const el = pista.current;
+    el?.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+  };
+
+  const paginas = pista.current
+    ? Math.max(1, Math.round(pista.current.scrollWidth / pista.current.clientWidth))
+    : 1;
 
   return (
     <section className="productos">
@@ -36,28 +68,56 @@ export default function Productos() {
           </div>
         </div>
 
-        <div className="productos-grid">
-          {productos.map(p => (
-            <article key={p.nombre} className="producto">
-              <div className="producto-img">
-                <img src={p.img} alt={p.nombre} />
-                <span className="badge">Disponible</span>
-              </div>
+        {!cargando && productos.length === 0 && (
+          <p className="productos-vacio">Pronto tendremos productos disponibles.</p>
+        )}
 
-              <div className="producto-body">
-                <small>{p.detalle}</small>
-                <h3>{p.nombre}</h3>
+        <div className="carrusel">
+          <button className="flecha izq" onClick={() => mover(-1)} aria-label="Anterior">‹</button>
 
-                <div className="producto-footer">
-                  <strong>${p.precio}</strong>
-                  <button onClick={() => setCarrito(carrito + 1)}>
-                    <CartIcon /> Agregar
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
+          <div className="pista" ref={pista} onScroll={alScroll}>
+            {productos.map((p) => {
+              const agotado = p.stock <= 0;
+              return (
+                <article key={p.id} className="producto">
+                  <div className="producto-img">
+                    {p.imagen_url && <img src={p.imagen_url} alt={p.nombre} />}
+                    <span className={`badge ${agotado ? "agotado" : ""}`}>
+                      {agotado ? "Agotado" : "Disponible"}
+                    </span>
+                  </div>
+
+                  <div className="producto-body">
+                    <small>{p.detalle}</small>
+                    <h3>{p.nombre}</h3>
+
+                    <div className="producto-footer">
+                      <strong>${Number(p.precio)}</strong>
+                      <button disabled={agotado} onClick={() => setCarrito(carrito + 1)}>
+                        <CartIcon /> Agregar
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <button className="flecha der" onClick={() => mover(1)} aria-label="Siguiente">›</button>
         </div>
+
+        {paginas > 1 && (
+          <div className="puntos">
+            {Array.from({ length: paginas }).map((_, i) => (
+              <button
+                key={i}
+                className={i === pagina ? "on" : ""}
+                onClick={() => irA(i)}
+                aria-label={`Página ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

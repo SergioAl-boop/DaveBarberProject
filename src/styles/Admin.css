@@ -368,3 +368,91 @@ ag-tabs {
   .ag-cita { align-items: flex-start; }
   .ag-acciones { width: 100%; }
 }
+
+
+.admin-botones { display: flex; gap: 0.6rem; }
+.admin-hint { font-size: 0.7rem; color: #7c8798; }
+
+.admin-lista span small { display: block; font-size: 0.7rem; color: #7c8798; }
+.admin-lista li.oculto { opacity: 0.55; }
+
+.admin-card form button.gris,
+.admin-lista button.gris {
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  color: var(--navy);
+}
+
+.admin-lista li { flex-wrap: wrap; }
+
+
+/* ---------- CLIENTES ---------- */
+.cli-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: #7c8798;
+}
+
+.cli-buscar {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px;
+  font: 400 0.85rem "DM Sans", sans-serif;
+}
+
+.cli-lista { overflow: hidden; }
+.cli-item { border-top: 1px solid #e5e8ef; }
+.cli-item:first-child { border-top: none; }
+
+.cli-fila {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.3rem;
+  cursor: pointer;
+}
+
+.cli-fila:hover { background: #f7f9fc; }
+
+.cli-info { flex: 1; min-width: 150px; }
+.cli-info b { display: block; font-size: 0.9rem; }
+.cli-info small { font-size: 0.7rem; color: #7c8798; }
+
+.cli-dato { min-width: 60px; text-align: center; }
+.cli-dato b { display: block; font-family: "Oswald", sans-serif; font-size: 1.1rem; }
+.cli-dato small { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7c8798; }
+
+.cli-wa {
+  padding: 0.45rem 0.8rem;
+  background: #e6f6ee;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #1c8a64;
+  text-decoration: none;
+}
+
+.cli-detalle { padding: 0.2rem 1.3rem 1.2rem 4.2rem; font-size: 0.8rem; color: #5d6b82; }
+.cli-detalle p { margin-bottom: 0.6rem; }
+
+.cli-cita {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid #eef0f4;
+  color: var(--navy);
+}
+
+.cli-serv { flex: 1; min-width: 120px; }
+
+@media (max-width: 900px) {
+  .cli-detalle { padding-left: 1.3rem; }
+}

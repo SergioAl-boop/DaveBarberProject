@@ -32,7 +32,7 @@ export function FormPortafolio() {
       const imagen_url = await subirImagen(archivo, "portafolio");
       const { error } = await supabase.from("portafolio").insert({ ...form, imagen_url });
       if (error) throw error;
-      setMsg("✅ Guardado");
+      setMsg(" Guardado");
       setForm({ nombre: "", categoria: "fade" });
       setArchivo(null);
       formulario.reset();
@@ -93,10 +93,12 @@ export function FormPortafolio() {
 }
 
 export function FormProductos() {
-  const vacio = { nombre: "", detalle: "", precio: "", stock: 0 };
+  const vacio = { nombre: "", detalle: "", precio: "", stock: 10 };
   const [lista, setLista] = useState([]);
   const [form, setForm] = useState(vacio);
   const [archivo, setArchivo] = useState(null);
+  const [editId, setEditId] = useState(null);
+  const [fileKey, setFileKey] = useState(0);
   const [msg, setMsg] = useState("");
   const [cargando, setCargando] = useState(false);
 
@@ -108,25 +110,33 @@ export function FormProductos() {
 
   const cambiar = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  const limpiar = () => {
+    setForm(vacio);
+    setArchivo(null);
+    setEditId(null);
+    setFileKey((k) => k + 1);
+  };
+
   const guardar = async (e) => {
     e.preventDefault();
-    const formulario = e.target;
     setMsg("");
     setCargando(true);
     try {
-      const imagen_url = archivo ? await subirImagen(archivo, "productos") : null;
-      const { error } = await supabase.from("productos").insert({
+      const datos = {
         nombre: form.nombre,
         detalle: form.detalle,
         precio: Number(form.precio),
         stock: Number(form.stock),
-        imagen_url,
-      });
+      };
+      if (archivo) datos.imagen_url = await subirImagen(archivo, "productos");
+
+      const { error } = editId
+        ? await supabase.from("productos").update(datos).eq("id", editId)
+        : await supabase.from("productos").insert(datos);
       if (error) throw error;
-      setMsg("✅ Guardado");
-      setForm(vacio);
-      setArchivo(null);
-      formulario.reset();
+
+      setMsg(editId ? "Producto actualizado" : " Producto agregado");
+      limpiar();
       cargar();
     } catch (err) {
       setMsg("❌ " + err.message);
@@ -135,31 +145,76 @@ export function FormProductos() {
     }
   };
 
-  const borrar = async (id) => {
-    if (!confirm("¿Eliminar este producto?")) return;
-    const { error } = await supabase.from("productos").delete().eq("id", id);
+  const editar = (p) => {
+    setEditId(p.id);
+    setForm({ nombre: p.nombre, detalle: p.detalle || "", precio: p.precio, stock: p.stock });
+    setArchivo(null);
+    setFileKey((k) => k + 1);
+    setMsg("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const alternar = async (p) => {
+    const { error } = await supabase.from("productos").update({ activo: !p.activo }).eq("id", p.id);
     if (error) setMsg("❌ " + error.message);
     else cargar();
   };
 
+  const borrar = async (id) => {
+    if (!confirm("¿Eliminar este producto definitivamente?")) return;
+    const { error } = await supabase.from("productos").delete().eq("id", id);
+    if (error) setMsg("❌ " + error.message);
+    else {
+      if (editId === id) limpiar();
+      cargar();
+    }
+  };
+
   return (
     <div className="admin-card">
-      <h2>Productos</h2>
+      <h2>{editId ? "Editar producto" : "Agregar producto"}</h2>
+
       <form onSubmit={guardar}>
         <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={cambiar} required />
         <input name="detalle" placeholder="Detalle (ej. Fijación · 100 g)" value={form.detalle} onChange={cambiar} />
         <input name="precio" type="number" step="0.01" min="0" placeholder="Precio" value={form.precio} onChange={cambiar} required />
-        <input name="stock" type="number" min="0" placeholder="Stock" value={form.stock} onChange={cambiar} />
-        <input type="file" accept="image/*" onChange={(e) => setArchivo(e.target.files[0])} />
-        <button disabled={cargando}>{cargando ? "Guardando..." : "Agregar"}</button>
+        <input name="stock" type="number" min="0" placeholder="Stock (piezas disponibles)" value={form.stock} onChange={cambiar} required />
+        <input
+          key={fileKey}
+          type="file"
+          accept="image/*"
+          onChange={(e) => setArchivo(e.target.files[0] || null)}
+        />
+        {editId && <small className="admin-hint">Deja la foto vacía para conservar la actual.</small>}
+
+        <div className="admin-botones">
+          <button disabled={cargando}>
+            {cargando ? "Guardando..." : editId ? "Guardar cambios" : "Agregar"}
+          </button>
+          {editId && (
+            <button type="button" className="gris" onClick={limpiar}>Cancelar</button>
+          )}
+        </div>
         {msg && <p className="admin-msg">{msg}</p>}
       </form>
 
+      <h2>Catálogo ({lista.length})</h2>
       <ul className="admin-lista">
         {lista.map((p) => (
-          <li key={p.id}>
+          <li key={p.id} className={p.activo ? "" : "oculto"}>
             {p.imagen_url && <img src={p.imagen_url} alt="" />}
-            <span>{p.nombre} · ${p.precio}</span>
+            <span>
+              {p.nombre} · ${Number(p.precio)}
+              <small>
+                Stock: {p.stock}
+                {p.stock <= 0 && " · Agotado"}
+                {!p.activo && " · Oculto"}
+              </small>
+            </span>
+            <button className="gris" onClick={() => editar(p)}>Editar</button>
+            <button className="gris" onClick={() => alternar(p)}>
+              {p.activo ? "Ocultar" : "Mostrar"}
+            </button>
             <button onClick={() => borrar(p.id)}>Eliminar</button>
           </li>
         ))}

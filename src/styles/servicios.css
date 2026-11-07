@@ -21,12 +21,78 @@
   margin-bottom: 50px;
 }
 
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* ---------- CARRUSEL ---------- */
+.services-carrusel { position: relative; }
+
+.services-pista {
+  display: flex;
   gap: 25px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 8px 0;
 }
 
+.services-pista::-webkit-scrollbar { display: none; }
+
+.services-pista .service-card {
+  flex: 0 0 calc((100% - 50px) / 3);
+  scroll-snap-align: start;
+}
+
+.srv-flecha {
+  position: absolute;
+  top: 130px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0 0 4px;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 50%;
+  box-shadow: 0 6px 16px rgba(5, 26, 58, 0.18);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #002c66;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.srv-flecha:hover {
+  background: #002c66;
+  color: #fff;
+}
+
+.srv-flecha.izq { left: 10px; }
+.srv-flecha.der { right: 10px; }
+
+.services-puntos {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.services-puntos button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  background: #c7cdd6;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: width 0.2s, background 0.2s;
+}
+
+.services-puntos button.on {
+  width: 22px;
+  border-radius: 4px;
+  background: #002c66;
+}
+
+/* ---------- TARJETA ---------- */
 .service-card {
   background: white;
   border: 1px solid #dfe5ea;
@@ -63,14 +129,16 @@
 }
 
 .service-content h3 {
-  font-size: 2rem;
+  font-size: 1.6rem;
   color: #002c66;
   margin-bottom: 20px;
+  min-height: 3.6em;
 }
 
 .service-info {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 25px;
   color: #7c8798;
 }
@@ -105,10 +173,9 @@
   color: #4b5563;
 }
 
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 1024px) {
-  .services-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+  .services-pista .service-card { flex-basis: calc((100% - 25px) / 2); }
 
   .services-header h2 {
     font-size: 3rem;
@@ -120,9 +187,8 @@
     padding: 60px 20px;
   }
 
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
+  .services-pista .service-card { flex-basis: 85%; }
+  .srv-flecha { display: none; }
 
   .services-header h2 {
     font-size: 2.3rem;

@@ -8,6 +8,8 @@ import Resumen from "./pages/admin/Resumen";
 import Proximamente from "./pages/admin/Proximamente";
 import { AdminProductos, AdminPortafolio } from "./pages/admin/Catalogos";
 import Agenda from "./pages/admin/Agenda";
+import Clientes from "./pages/admin/Clientes";
+import ServiciosAdmin from "./pages/admin/ServiciosAdmin";
 
 function App() {
   return (
@@ -19,8 +21,8 @@ function App() {
       <Route path="/admin" element={<RutaAdmin><AdminLayout /></RutaAdmin>}>
         <Route index element={<Resumen />} />
         <Route path="agenda" element={<Agenda />} />
-        <Route path="clientes" element={<Proximamente titulo="Clientes" />} />
-        <Route path="servicios" element={<Proximamente titulo="Servicios" />} />
+        <Route path="clientes" element={<Clientes />} />
+        <Route path="servicios" element={<ServiciosAdmin />} />
         <Route path="productos" element={<AdminProductos />} />
         <Route path="portafolio" element={<AdminPortafolio />} />
       </Route>
