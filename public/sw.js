@@ -1,11 +1,13 @@
 self.addEventListener("push", (e) => {
-  const d = e.data ? e.data.json() : {};
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { d = { mensaje: e.data?.text() }; }
+
   e.waitUntil(
     self.registration.showNotification(d.titulo || "Dave Barber Studio", {
       body: d.mensaje || "",
-      icon: "/icons/icon-192x192.png",
-      badge: "/icons/icon-96x96.png",
-      data: { url: d.url || "/" },
+      icon: "/DaveBarberProject/icons/icon-192x192.png",
+      badge: "/DaveBarberProject/icons/icon-96x96.png",
+      data: { url: d.url || "/DaveBarberProject/" },
     })
   );
 });

@@ -17,7 +17,7 @@ export async function activarPush(userId) {
   const permiso = await Notification.requestPermission();
   if (permiso !== "granted") throw new Error("Permiso de notificaciones denegado");
 
-  const reg = await navigator.serviceWorker.register("/sw.js");
+  const reg = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
   await navigator.serviceWorker.ready;
 
   let sub = await reg.pushManager.getSubscription();
