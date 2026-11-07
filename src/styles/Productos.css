@@ -33,6 +33,9 @@
 
 .productos-header p { margin-top: 0.8rem; color: #7c8798; }
 
+.productos-vacio { padding: 2rem 0; color: #7c8798; }
+
+/* ---------- CARRITO ---------- */
 .carrito {
   display: flex;
   align-items: center;
@@ -54,11 +57,78 @@
   font-size: 0.7rem;
 }
 
-.productos-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* ---------- CARRUSEL ---------- */
+.carrusel { position: relative; }
+
+.pista {
+  display: flex;
   gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 0.3rem 0 0.5rem;
 }
+
+.pista::-webkit-scrollbar { display: none; }
+
+.pista .producto {
+  flex: 0 0 calc((100% - 3rem) / 3);
+  scroll-snap-align: start;
+}
+
+.flecha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0 0 4px;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 50%;
+  box-shadow: 0 6px 16px rgba(5, 26, 58, 0.18);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--navy);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.flecha:hover {
+  background: var(--navy);
+  color: #fff;
+}
+
+.flecha.izq { left: 10px; }
+.flecha.der { right: 10px; }
+
+.puntos {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.puntos button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  background: #c7cdd6;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: width 0.2s, background 0.2s;
+}
+
+.puntos button.on {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--navy);
+}
+
 
 .producto {
   background: #fff;
@@ -88,6 +158,8 @@
   text-transform: uppercase;
   color: #1fa971;
 }
+
+.badge.agotado { color: var(--red); }
 
 .producto-body { padding: 1.2rem 1.5rem 1.5rem; }
 
@@ -125,12 +197,19 @@
   cursor: pointer;
 }
 
+.producto-footer button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
 @media (max-width: 900px) {
   .productos { padding: 3.5rem 0; }
-  .productos-grid { grid-template-columns: 1fr 1fr; }
+  .pista .producto { flex-basis: calc((100% - 1.5rem) / 2); }
 }
 
 @media (max-width: 560px) {
-  .productos-grid { grid-template-columns: 1fr; }
+  .pista .producto { flex-basis: 85%; }
   .producto-img img { height: 230px; }
+  .flecha { display: none; }
 }
