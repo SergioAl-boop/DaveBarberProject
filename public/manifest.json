@@ -1,7 +1,7 @@
 {
   "name": "Dave Barber Studio",
   "short_name": "Dave",
-  "start_url": "/DaveBarberProject/",
+  "start_url": "/",
   "scope": "/DaveBarberProject/",
   "display": "standalone",
   "background_color": "#051a3a",

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ReservaModal.css";
+import { uuid } from "../lib/uuid";
 
 const CLABE = "5428 7851 0417 4759  ";
 const ANTICIPO = 100;
@@ -31,6 +32,7 @@ const Flecha = () => (
 );
 
 export default function Reservas({ onClose }) {
+ 
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -119,7 +121,7 @@ export default function Reservas({ onClose }) {
     setCargando(true);
     try {
       const ext = archivo.name.split(".").pop().toLowerCase();
-      const ruta = `${user.id}/${crypto.randomUUID()}.${ext}`;
+       const ruta = `${user.id}/${uuid()}.${ext}`;
 
       const { error: e1 } = await supabase.storage.from("comprobantes").upload(ruta, archivo);
       if (e1) throw e1;

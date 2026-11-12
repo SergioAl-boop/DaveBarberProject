@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Cuenta from "./pages/Cuenta";
 import RutaAdmin from "./components/RutaAdmin";
@@ -10,6 +10,7 @@ import { AdminProductos, AdminPortafolio } from "./pages/admin/Catalogos";
 import Agenda from "./pages/admin/Agenda";
 import Clientes from "./pages/admin/Clientes";
 import ServiciosAdmin from "./pages/admin/ServiciosAdmin";
+import Pedidos from "./pages/admin/Pedidos";
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
         <Route path="servicios" element={<ServiciosAdmin />} />
         <Route path="productos" element={<AdminProductos />} />
         <Route path="portafolio" element={<AdminPortafolio />} />
+        <Route path="pedidos" element={<Pedidos />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );

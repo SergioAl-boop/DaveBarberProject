@@ -1,18 +1,31 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
+
 html {
   scroll-behavior: smooth;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  font-family: 'Pirata One', cursive !important;
 }
 
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: 'Pirata One', cursive;
   background: #fff;
   color: #1f2a44;
   min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6,
+.titulo {
+  font-family: 'Pirata One', cursive;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: 'Pirata One', cursive;
 }
 
 img {

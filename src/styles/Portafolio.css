@@ -99,7 +99,7 @@
   right: 1.2rem;
   bottom: 1rem;
   z-index: 1;
-  text-align: left;
+  text-align: right;
 }
 
 .corte-info h3 { font-family: "Oswald", sans-serif; font-size: 1.2rem; }
@@ -122,6 +122,17 @@
 }
 
 @media (max-width: 560px) {
-  .portafolio-grid.full { grid-template-columns: 1fr; }
-  .portafolio-grid.full .corte:nth-child(n) { grid-column: auto; grid-row: auto; }
+  .portafolio-grid.full {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 220px; 
+  }
+
+  .portafolio-grid.full .corte:nth-child(n) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .corte {
+    min-height: 0; 
+  }
 }

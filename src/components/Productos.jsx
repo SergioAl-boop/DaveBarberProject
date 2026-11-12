@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
+import { useCarrito } from "../context/CarritoContext";
 import "../styles/Productos.css";
 
 const CartIcon = () => (
@@ -11,9 +14,11 @@ const CartIcon = () => (
 );
 
 export default function Productos() {
+  const { user } = useAuth();
+  const esAdmin = user?.rol === "admin";
+  const { items, agregar, cantidad, abrir } = useCarrito();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [carrito, setCarrito] = useState(0);
   const [pagina, setPagina] = useState(0);
   const pista = useRef(null);
 
@@ -50,6 +55,8 @@ export default function Productos() {
     ? Math.max(1, Math.round(pista.current.scrollWidth / pista.current.clientWidth))
     : 1;
 
+  const enCarrito = (id) => items.find((i) => i.id === id)?.cantidad || 0;
+
   return (
     <section className="productos">
       <div className="container">
@@ -62,10 +69,16 @@ export default function Productos() {
             <p>Productos seleccionados para cuidar tu estilo entre citas.</p>
           </div>
 
-          <div className="carrito">
-            <CartIcon /> Carrito
-            <b>{carrito}</b>
-          </div>
+          {esAdmin ? (
+            <Link to="/admin/pedidos" className="carrito admin-link">
+              Ver pedidos →
+            </Link>
+          ) : (
+            <button className="carrito carrito-btn" onClick={abrir}>
+              <CartIcon /> Ver mi carrito
+              <b>{cantidad}</b>
+            </button>
+          )}
         </div>
 
         {!cargando && productos.length === 0 && (
@@ -78,10 +91,12 @@ export default function Productos() {
           <div className="pista" ref={pista} onScroll={alScroll}>
             {productos.map((p) => {
               const agotado = p.stock <= 0;
+              const ya = enCarrito(p.id);
+              const tope = ya >= p.stock;
               return (
                 <article key={p.id} className="producto">
                   <div className="producto-img">
-                    {p.imagen_url && <img src={p.imagen_url} alt={p.nombre} />}
+                    {p.imagen_url && <img src={p.imagen_url} alt={p.nombre} loading="lazy" />}
                     <span className={`badge ${agotado ? "agotado" : ""}`}>
                       {agotado ? "Agotado" : "Disponible"}
                     </span>
@@ -93,9 +108,15 @@ export default function Productos() {
 
                     <div className="producto-footer">
                       <strong>${Number(p.precio)}</strong>
-                      <button disabled={agotado} onClick={() => setCarrito(carrito + 1)}>
-                        <CartIcon /> Agregar
-                      </button>
+                      {esAdmin ? (
+                        <Link to="/admin/productos" className="btn-editar">
+                          Stock: {p.stock} · Editar
+                        </Link>
+                      ) : (
+                        <button disabled={agotado || tope} onClick={() => agregar(p)}>
+                          <CartIcon /> {ya > 0 ? `Agregar (${ya})` : "Agregar"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </article>

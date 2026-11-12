@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { activarPush, pushSoportado } from "../lib/push";
 
 export default function BotonNotificaciones({ className = "" }) {
   const { user } = useAuth();
-  const [estado, setEstado] = useState(
-    pushSoportado() && Notification.permission === "granted" ? "activo" : "inactivo"
-  );
+  const [estado, setEstado] = useState("inactivo");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!user || !pushSoportado()) return;
+    if (Notification.permission === "granted") {
+      activarPush(user.id)
+        .then(() => setEstado("activo"))
+        .catch((e) => setError(e.message || String(e)));
+    }
+  }, [user]);
 
   if (!user) return null;
 
@@ -17,16 +24,18 @@ export default function BotonNotificaciones({ className = "" }) {
       await activarPush(user.id);
       setEstado("activo");
     } catch (e) {
-      setError(e.message);
+      setError(e.message || String(e));
     }
   };
 
-  if (estado === "activo") return <span className={className}> Notificaciones activas</span>;
-
   return (
     <>
-      <button className={className} onClick={activar}> Activar notificaciones</button>
-      {error && <small style={{ color: "#d91f2e" }}>{error}</small>}
+      {estado === "activo" ? (
+        <span className={className}> Notificaciones activas</span>
+      ) : (
+        <button className={className} onClick={activar}> Activar notificaciones</button>
+      )}
+      {error && <small style={{ color: "#d91f2e", display: "block" }}>{error}</small>}
     </>
   );
 }
