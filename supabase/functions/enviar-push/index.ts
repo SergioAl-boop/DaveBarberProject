@@ -1,6 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import webpush from "npm:web-push@3.6.7";
 
+const BASE = "/DaveBarberProject";
+
 webpush.setVapidDetails(
   Deno.env.get("VAPID_SUBJECT")!,
   Deno.env.get("VAPID_PUBLIC")!,
@@ -17,23 +19,23 @@ Deno.serve(async (req) => {
 
   const [{ data: subs }, { data: perfil }] = await Promise.all([
     sb.from("push_subscriptions").select("*").eq("usuario_id", record.usuario_id),
-    sb.from("perfiles").select("rol").eq("id", record.usuario_id).single(),
+    sb.from("perfiles").select("rol").eq("id", record.usuario_id).maybeSingle(),
   ]);
 
   const payload = JSON.stringify({
     titulo: record.titulo,
     mensaje: record.mensaje,
-    url: perfil?.rol === "admin" ? "/admin/agenda" : "/cuenta",
+    url: perfil?.rol === "admin" ? `${BASE}/admin/agenda` : `${BASE}/cuenta`,
   });
 
   await Promise.all(
-    (subs || []).map(async (s) => {
+    (subs || []).map(async (s: any) => {
       try {
         await webpush.sendNotification(
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
           payload
         );
-      } catch (err) {
+      } catch (err: any) {
         if (err.statusCode === 404 || err.statusCode === 410) {
           await sb.from("push_subscriptions").delete().eq("id", s.id);
         }

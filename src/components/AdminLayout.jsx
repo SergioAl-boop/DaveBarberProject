@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import BotonNotificaciones from "./BotonNotificaciones";
-import logo from "../assets/logodave.jpeg";
+import logo from "../assets/logosololetras.png";
 import "../styles/Admin.css";
 
 const Icono = ({ children }) => (
@@ -21,6 +21,8 @@ const menu = [
     icono: <Icono><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M8.5 8l11 11M8.5 16l11-11" /></Icono> },
   { to: "/admin/productos", label: "Productos",
     icono: <Icono><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" /></Icono> },
+  { to: "/admin/pedidos", label: "Pedidos",
+  icono: <Icono><path d="M6 2l-2 4v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4zM4 6h16M16 10a4 4 0 0 1-8 0" /></Icono> },
   { to: "/admin/portafolio", label: "Portafolio",
     icono: <Icono><path d="M12 16V4M7 9l5-5 5 5M4 20h16" /></Icono> },
 ];

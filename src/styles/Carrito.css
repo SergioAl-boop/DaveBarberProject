@@ -1,0 +1,26 @@
+.cr-lista { display: grid; gap: 0.7rem; margin-bottom: 1rem; list-style: none; padding: 0; }
+
+.cr-lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px;
+}
+
+.cr-lista img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
+.cr-info { flex: 1; min-width: 0; }
+.cr-info b { display: block; font-size: 0.85rem; }
+.cr-info small { font-size: 0.7rem; color: #7c8798; }
+
+.cr-cant { display: flex; align-items: center; gap: 0.5rem; }
+.cr-cant button {
+  width: 26px; height: 26px;
+  background: #eef2f7; border: none; border-radius: 6px;
+  font-size: 1rem; color: var(--navy); cursor: pointer;
+}
+.cr-cant button:disabled { opacity: 0.4; cursor: not-allowed; }
+.cr-cant span { min-width: 18px; text-align: center; font-weight: 700; font-size: 0.85rem; }
+
+.cr-quitar { background: none; border: none; color: #9aa3b2; cursor: pointer; }

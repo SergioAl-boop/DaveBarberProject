@@ -1,5 +1,11 @@
+self.addEventListener("install", () => self.skipWaiting());
+
+self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+
 self.addEventListener("push", (e) => {
-  const d = e.data ? e.data.json() : {};
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { d = { mensaje: e.data?.text() }; }
+
   e.waitUntil(
     self.registration.showNotification(d.titulo || "Dave Barber Studio", {
       body: d.mensaje || "",

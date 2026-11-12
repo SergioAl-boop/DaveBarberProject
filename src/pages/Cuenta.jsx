@@ -31,6 +31,16 @@ export default function Cuenta() {
       });
   }, []);
 
+  const [pedidos, setPedidos] = useState([]);
+
+useEffect(() => {
+  supabase
+    .from("pedidos")
+    .select("id, total, estado, creado_en, pedido_items(nombre, cantidad)")
+    .order("creado_en", { ascending: false })
+    .then(({ data }) => setPedidos(data || []));
+}, []);
+
   const salir = async () => {
     await logout();
     navigate("/");
@@ -62,6 +72,22 @@ export default function Cuenta() {
             <span>{c.hora_inicio.slice(0, 5)}</span>
             <span className="cuenta-servicio">{c.servicios?.nombre}</span>
             <em>{ESTADOS[c.estado]}</em>
+          </div>
+        ))}
+      </section>
+
+      <section className="cuenta-card" style={{ marginTop: "1.5rem" }}>
+        <h2>Mis pedidos</h2>
+        {pedidos.length === 0 && <p className="cuenta-vacio">Aún no has apartado productos.</p>}
+        {pedidos.map((p) => (
+          <div key={p.id} className="cuenta-cita">
+            <strong>{new Date(p.creado_en).toLocaleDateString("es-MX")}</strong>
+            <span className="cuenta-servicio">
+              {p.pedido_items.map((i) => `${i.cantidad}× ${i.nombre}`).join(", ")}
+            </span>
+            <span>${Number(p.total)}</span>
+            <em>{{ por_validar: "Por validar", confirmado: "Listo para recoger",
+                  entregado: "Entregado", cancelado: "Cancelado" }[p.estado]}</em>
           </div>
         ))}
       </section>

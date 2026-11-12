@@ -35,7 +35,7 @@
 
 .productos-vacio { padding: 2rem 0; color: #7c8798; }
 
-/* ---------- CARRITO ---------- */
+
 .carrito {
   display: flex;
   align-items: center;
@@ -57,7 +57,6 @@
   font-size: 0.7rem;
 }
 
-/* ---------- CARRUSEL ---------- */
 .carrusel { position: relative; }
 
 .pista {
@@ -203,6 +202,22 @@
 }
 
 
+.admin-link {
+  color: var(--navy);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-editar {
+  padding: 0.7rem 1rem;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 10px;
+  font: 700 0.75rem "DM Sans", sans-serif;
+  color: var(--navy);
+  text-decoration: none;
+}
+
 @media (max-width: 900px) {
   .productos { padding: 3.5rem 0; }
   .pista .producto { flex-basis: calc((100% - 1.5rem) / 2); }
@@ -213,3 +228,5 @@
   .producto-img img { height: 230px; }
   .flecha { display: none; }
 }
+
+.carrito-btn { background: none; border: none; font-family: inherit; cursor: pointer; }
