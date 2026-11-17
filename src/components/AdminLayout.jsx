@@ -1,4 +1,5 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import BotonNotificaciones from "./BotonNotificaciones";
 import logo from "../assets/logosololetras.png";
@@ -22,7 +23,7 @@ const menu = [
   { to: "/admin/productos", label: "Productos",
     icono: <Icono><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" /></Icono> },
   { to: "/admin/pedidos", label: "Pedidos",
-  icono: <Icono><path d="M6 2l-2 4v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4zM4 6h16M16 10a4 4 0 0 1-8 0" /></Icono> },
+    icono: <Icono><path d="M6 2l-2 4v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4zM4 6h16M16 10a4 4 0 0 1-8 0" /></Icono> },
   { to: "/admin/portafolio", label: "Portafolio",
     icono: <Icono><path d="M12 16V4M7 9l5-5 5 5M4 20h16" /></Icono> },
 ];
@@ -30,6 +31,19 @@ const menu = [
 export default function AdminLayout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [abierto, setAbierto] = useState(false);
+
+  useEffect(() => {
+    setAbierto(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = abierto ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [abierto]);
 
   const salir = async () => {
     await logout();
@@ -38,21 +52,39 @@ export default function AdminLayout() {
 
   return (
     <div className="adm">
-      <aside className="adm-side">
-        <img className="adm-logo" src={logo} alt="Dave Barber Studio" />
-        <span className="adm-badge">Administrador</span>
+      <aside className={`adm-side ${abierto ? "abierto" : ""}`}>
+        <div className="adm-top">
+          <img className="adm-logo" src={logo} alt="Dave Barber Studio" />
+          <button
+            type="button"
+            className="adm-burger"
+            aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={abierto}
+            onClick={() => setAbierto((v) => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
 
-        <nav className="adm-nav">
-          {menu.map((m) => (
-            <NavLink key={m.to} to={m.to} end={m.end}>
-              {m.icono}
-              {m.label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="adm-overlay" onClick={() => setAbierto(false)} />
 
-        <BotonNotificaciones className="adm-salir" />
-        <button className="adm-salir adm-salir-final" onClick={salir}>Cerrar sesión</button>
+        <div className="adm-panel">
+          <span className="adm-badge">Administrador</span>
+
+          <nav className="adm-nav">
+            {menu.map((m) => (
+              <NavLink key={m.to} to={m.to} end={m.end}>
+                {m.icono}
+                {m.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <BotonNotificaciones className="adm-salir" />
+          <button className="adm-salir adm-salir-final" onClick={salir}>Cerrar sesión</button>
+        </div>
       </aside>
 
       <main className="adm-main">
