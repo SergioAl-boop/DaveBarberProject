@@ -83,9 +83,25 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => supabase.auth.signOut();
+  const recuperar = async (email) => {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/restablecer`,
+  });
+  if (error) {
+    if (error.status === 429 || /rate limit/i.test(error.message))
+      throw new Error("Se enviaron demasiados correos. Espera unos minutos.");
+    throw new Error(error.message);
+  }
+};
+
+const cambiarPassword = async (password) => {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw new Error(error.message);
+  await supabase.auth.signOut();
+};
 
   return (
-    <AuthContext.Provider value={{ user: perfil, cargando, login, registrar, logout }}>
+    <AuthContext.Provider value={{ user: perfil, cargando, login, registrar, logout, recuperar, cambiarPassword }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import LoginModal from "../components/LoginModal";
 import Reservas from "../components/Reservas";
@@ -10,6 +11,14 @@ export function ReservaProvider({ children }) {
   const [loginOpen, setLoginOpen] = useState(false);
   const [reservaOpen, setReservaOpen] = useState(false);
   const [pendiente, setPendiente] = useState(false);
+  const [params, setParams] = useSearchParams();
+
+  useEffect(() => {
+    if (params.get("login")) {
+      setLoginOpen(true);
+      setParams({}, { replace: true });
+    }
+  }, [params, setParams]);
 
   const abrirLogin = () => {
     setPendiente(false);

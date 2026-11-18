@@ -1,31 +1,18 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=New+Rocker&display=swap');
 
 html {
   scroll-behavior: smooth;
 }
 
 * {
-  font-family: 'Pirata One', cursive !important;
+  font-family: 'New Rocker', system-ui !important;
 }
 
 body {
-  font-family: 'Pirata One', cursive;
+  font-family: 'New Rocker', system-ui;
   background: #fff;
   color: #1f2a44;
   min-height: 100vh;
-}
-
-h1, h2, h3, h4, h5, h6,
-.titulo {
-  font-family: 'Pirata One', cursive;
-}
-
-button,
-input,
-textarea,
-select {
-  font-family: 'Pirata One', cursive;
 }
 
 img {
@@ -35,4 +22,17 @@ img {
 
 #root {
   min-height: 100vh;
+}
+
+* {
+  font-weight: 400 !important;
+  font-synthesis: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: clamp(1rem, 2.5vw, 1.5rem);
+  padding-right: clamp(1rem, 2.5vw, 1.5rem);
 }

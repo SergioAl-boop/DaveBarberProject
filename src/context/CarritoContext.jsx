@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import CarritoModal from "../components/CarritoModal";
+import CarritoFlotante from "../components/CarritoFlotante";
 
 const CarritoContext = createContext(null);
 const CLAVE = "carrito";
@@ -50,6 +51,7 @@ export function CarritoProvider({ children }) {
                abrir: () => setAbierto(true) }}
     >
       {children}
+      <CarritoFlotante />
       {abierto && <CarritoModal onClose={() => setAbierto(false)} />}
     </CarritoContext.Provider>
   );

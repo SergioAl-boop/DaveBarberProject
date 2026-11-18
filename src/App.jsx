@@ -11,12 +11,14 @@ import Agenda from "./pages/admin/Agenda";
 import Clientes from "./pages/admin/Clientes";
 import ServiciosAdmin from "./pages/admin/ServiciosAdmin";
 import Pedidos from "./pages/admin/Pedidos";
+import Restablecer from "./pages/Restablecer";
+
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-
+      <Route path="/restablecer" element={<Restablecer />} />
       <Route path="/cuenta" element={<RutaCliente><Cuenta /></RutaCliente>} />
 
       <Route path="/admin" element={<RutaAdmin><AdminLayout /></RutaAdmin>}>

@@ -1,0 +1,57 @@
+.cf-wrap {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cf-etiqueta {
+  padding: 0.3rem 0.7rem;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(5, 26, 58, 0.2);
+  font-size: 0.8rem;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.carrito-flotante {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 10px 28px rgba(217, 31, 46, 0.45);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.carrito-flotante:hover { transform: translateY(-3px); }
+
+.cf-cantidad {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  background: #fff;
+  border: 2px solid var(--red);
+  border-radius: 11px;
+  font-size: 0.75rem;
+  color: var(--red);
+}
+
+@media (max-width: 560px) {
+  .cf-wrap { right: 0.8rem; bottom: 0.8rem; }
+}

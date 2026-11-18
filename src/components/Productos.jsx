@@ -16,7 +16,7 @@ const CartIcon = () => (
 export default function Productos() {
   const { user } = useAuth();
   const esAdmin = user?.rol === "admin";
-  const { items, agregar, cantidad, abrir } = useCarrito();
+  const { items, agregar } = useCarrito();
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [pagina, setPagina] = useState(0);
@@ -69,15 +69,10 @@ export default function Productos() {
             <p>Productos seleccionados para cuidar tu estilo entre citas.</p>
           </div>
 
-          {esAdmin ? (
+          {esAdmin && (
             <Link to="/admin/pedidos" className="carrito admin-link">
               Ver pedidos →
             </Link>
-          ) : (
-            <button className="carrito carrito-btn" onClick={abrir}>
-              <CartIcon /> Ver mi carrito
-              <b>{cantidad}</b>
-            </button>
           )}
         </div>
 
