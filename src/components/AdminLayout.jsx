@@ -24,6 +24,8 @@ const menu = [
     icono: <Icono><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" /></Icono> },
   { to: "/admin/pedidos", label: "Pedidos",
     icono: <Icono><path d="M6 2l-2 4v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6l-2-4zM4 6h16M16 10a4 4 0 0 1-8 0" /></Icono> },
+  { to: "/admin/disponibilidad", label: "Disponibilidad",
+  icono: <Icono><circle cx="12" cy="12" r="9" /><path d="M5.6 5.6l12.8 12.8" /></Icono> },
   { to: "/admin/portafolio", label: "Portafolio",
     icono: <Icono><path d="M12 16V4M7 9l5-5 5 5M4 20h16" /></Icono> },
 ];

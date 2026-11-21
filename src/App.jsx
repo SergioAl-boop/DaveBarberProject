@@ -12,6 +12,7 @@ import Clientes from "./pages/admin/Clientes";
 import ServiciosAdmin from "./pages/admin/ServiciosAdmin";
 import Pedidos from "./pages/admin/Pedidos";
 import Restablecer from "./pages/Restablecer";
+import Disponibilidad from "./pages/admin/Disponibilidad";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
       <Route path="/admin" element={<RutaAdmin><AdminLayout /></RutaAdmin>}>
         <Route index element={<Resumen />} />
         <Route path="agenda" element={<Agenda />} />
+        <Route path="disponibilidad" element={<Disponibilidad />} />
         <Route path="clientes" element={<Clientes />} />
         <Route path="servicios" element={<ServiciosAdmin />} />
         <Route path="productos" element={<AdminProductos />} />

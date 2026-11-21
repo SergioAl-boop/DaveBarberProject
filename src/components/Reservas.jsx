@@ -2,15 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
-import "../styles/ReservaModal.css";
 import { uuid } from "../lib/uuid";
+import "../styles/ReservaModal.css";
 
-const CLABE = "5428 7851 0417 4759  ";
+const CLABE = "5428 7851 0417 4759";
 const ANTICIPO = 100;
-const PASO_MIN = 30;
-const DIAS_VISIBLES = 14;
+const PASO_MIN = 60;
+const MESES_ADELANTE = 11;
 
 const DIAS_CORTO = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+const DIAS_INICIAL = ["D", "L", "M", "M", "J", "V", "S"];
 const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
   "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
@@ -32,14 +33,20 @@ const Flecha = () => (
 );
 
 export default function Reservas({ onClose }) {
- 
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const ahora = new Date();
+  const hoy = aISO(ahora);
+  const mesActual = ahora.getFullYear() * 12 + ahora.getMonth();
 
   const [paso, setPaso] = useState(1);
   const [servicios, setServicios] = useState([]);
   const [horarios, setHorarios] = useState([]);
+  const [bloqueadas, setBloqueadas] = useState(new Set());
+  const [datosListos, setDatosListos] = useState(false);
   const [servicio, setServicio] = useState(null);
+  const [mes, setMes] = useState({ y: ahora.getFullYear(), m: ahora.getMonth() });
   const [fecha, setFecha] = useState("");
   const [hora, setHora] = useState(null);
   const [ocupadas, setOcupadas] = useState([]);
@@ -52,26 +59,43 @@ export default function Reservas({ onClose }) {
     Promise.all([
       supabase.from("servicios").select("*").eq("activo", true).order("id"),
       supabase.from("horarios").select("*").eq("disponible", true),
-    ]).then(([s, h]) => {
+      supabase.rpc("fechas_bloqueadas"),
+    ]).then(([s, h, b]) => {
       setServicios(s.data || []);
       setHorarios(h.data || []);
+      setBloqueadas(new Set((b.data || []).map((x) => x.fecha)));
       if (s.data?.length) setServicio(s.data[0]);
+      setDatosListos(true);
     });
   }, []);
 
-  const dias = useMemo(() => {
-    const out = [];
-    const hoy = new Date();
-    for (let i = 0; i < DIAS_VISIBLES; i++) {
-      const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
-      if (horarios.some((h) => h.dia_semana === d.getDay())) out.push(d);
-    }
-    return out;
-  }, [horarios]);
+  const diasAbiertos = useMemo(
+    () => new Set(horarios.map((h) => h.dia_semana)),
+    [horarios]
+  );
 
+  const estadoDia = (iso) => {
+    if (iso < hoy) return "pasado";
+    if (!diasAbiertos.has(deISO(iso).getDay())) return "cerrado";
+    if (bloqueadas.has(iso)) return "bloqueado";
+    return "libre";
+  };
+
+  // Al cargar, selecciona el primer día libre
   useEffect(() => {
-    if (!fecha && dias.length) setFecha(aISO(dias[0]));
-  }, [dias, fecha]);
+    if (!datosListos || fecha) return;
+    const base = new Date();
+    for (let i = 0; i <= 365; i++) {
+      const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
+      const iso = aISO(d);
+      if (estadoDia(iso) === "libre") {
+        setFecha(iso);
+        setMes({ y: d.getFullYear(), m: d.getMonth() });
+        break;
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datosListos]);
 
   useEffect(() => {
     if (!fecha) return;
@@ -83,12 +107,31 @@ export default function Reservas({ onClose }) {
     return () => { activo = false; };
   }, [fecha]);
 
+  const celdas = useMemo(() => {
+    const primero = new Date(mes.y, mes.m, 1);
+    const total = new Date(mes.y, mes.m + 1, 0).getDate();
+    const out = Array(primero.getDay()).fill(null);
+    for (let d = 1; d <= total; d++) out.push(aISO(new Date(mes.y, mes.m, d)));
+    return out;
+  }, [mes]);
+
+  const indiceMes = mes.y * 12 + mes.m;
+  const puedeAtras = indiceMes > mesActual;
+  const puedeAdelante = indiceMes < mesActual + MESES_ADELANTE;
+
+  const moverMes = (delta) => {
+    const i = indiceMes + delta;
+    setMes({ y: Math.floor(i / 12), m: i % 12 });
+  };
+
+  const estadoFecha = fecha ? estadoDia(fecha) : null;
+
   const slots = useMemo(() => {
-    if (!fecha || !servicio) return [];
+    if (!fecha || !servicio || estadoFecha !== "libre") return [];
     const dur = servicio.duracion_minutos;
-    const ahora = new Date();
-    const esHoy = fecha === aISO(ahora);
-    const minAhora = ahora.getHours() * 60 + ahora.getMinutes();
+    const esHoy = fecha === hoy;
+    const n = new Date();
+    const minAhora = n.getHours() * 60 + n.getMinutes();
     const out = [];
 
     horarios
@@ -104,7 +147,7 @@ export default function Reservas({ onClose }) {
         }
       });
     return out;
-  }, [fecha, servicio, horarios, ocupadas]);
+  }, [fecha, servicio, horarios, ocupadas, estadoFecha, hoy]);
 
   const elegirArchivo = (e) => {
     const f = e.target.files[0];
@@ -121,7 +164,7 @@ export default function Reservas({ onClose }) {
     setCargando(true);
     try {
       const ext = archivo.name.split(".").pop().toLowerCase();
-       const ruta = `${user.id}/${uuid()}.${ext}`;
+      const ruta = `${user.id}/${uuid()}.${ext}`;
 
       const { error: e1 } = await supabase.storage.from("comprobantes").upload(ruta, archivo);
       if (e1) throw e1;
@@ -203,42 +246,59 @@ export default function Reservas({ onClose }) {
                 <h3>Elige un horario</h3>
                 <p className="rv-sub">Selecciona el día y después una hora disponible.</p>
 
-                <div className="rv-dias">
-                  {dias.map((dia) => {
-                    const iso = aISO(dia);
-                    return (
-                      <button
-                        key={iso}
-                        className={`rv-dia ${fecha === iso ? "sel" : ""}`}
-                        onClick={() => setFecha(iso)}
-                      >
-                        <small>{DIAS_CORTO[dia.getDay()]}</small>
-                        <b>{dia.getDate()}</b>
-                      </button>
-                    );
-                  })}
+                <div className="rv-cal">
+                  <div className="rv-cal-top">
+                    <button disabled={!puedeAtras} onClick={() => moverMes(-1)} aria-label="Mes anterior">‹</button>
+                    <b>{MESES[mes.m]} {mes.y}</b>
+                    <button disabled={!puedeAdelante} onClick={() => moverMes(1)} aria-label="Mes siguiente">›</button>
+                  </div>
+
+                  <div className="rv-cal-grid">
+                    {DIAS_INICIAL.map((l, i) => <span key={i} className="rv-cal-dow">{l}</span>)}
+
+                    {celdas.map((iso, i) => {
+                      if (!iso) return <span key={`v${i}`} />;
+                      const est = estadoDia(iso);
+                      const deshabilitado = est === "pasado" || est === "cerrado";
+                      return (
+                        <button
+                          key={iso}
+                          disabled={deshabilitado}
+                          className={`rv-cal-dia ${est} ${fecha === iso ? "sel" : ""} ${iso === hoy ? "hoy" : ""}`}
+                          onClick={() => setFecha(iso)}
+                        >
+                          {Number(iso.slice(8))}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className="rv-leyenda">
                   <span><i className="verde" /> Disponible</span>
-                  <span><i /> Ocupado</span>
+                  <span><i className="rojo" /> Sin citas</span>
+                  <span><i /> Cerrado</span>
                 </div>
 
-                {slots.length === 0 && <p className="rv-vacio">No hay horarios para este día.</p>}
-
-                <div className="rv-slots">
-                  {slots.map((s) => (
-                    <button
-                      key={s.min}
-                      disabled={!s.libre}
-                      className={`rv-slot ${hora === s.min ? "sel" : ""} ${!s.libre ? "ocupado" : ""}`}
-                      onClick={() => setHora(s.min)}
-                    >
-                      {formatoHora(s.min)}
-                      {!s.libre && <small>Ocupado</small>}
-                    </button>
-                  ))}
-                </div>
+                {estadoFecha === "bloqueado" ? (
+                  <p className="rv-sinc">No hay citas disponibles este día. Elige otra fecha.</p>
+                ) : slots.length === 0 ? (
+                  <p className="rv-sinc">No hay citas disponibles este día. Elige otra fecha.</p>
+                ) : (
+                  <div className="rv-slots">
+                    {slots.map((s) => (
+                      <button
+                        key={s.min}
+                        disabled={!s.libre}
+                        className={`rv-slot ${hora === s.min ? "sel" : ""} ${!s.libre ? "ocupado" : ""}`}
+                        onClick={() => setHora(s.min)}
+                      >
+                        {formatoHora(s.min)}
+                        {!s.libre && <small>Ocupado</small>}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 <div className="rv-acciones">
                   <button className="rv-atras" onClick={() => setPaso(1)}>← Atrás</button>
