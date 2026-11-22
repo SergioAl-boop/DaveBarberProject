@@ -235,3 +235,86 @@
   font-size: 1.6rem;
   color: #1c8a64;
 }
+
+
+.rv-cal { margin-bottom: 0.8rem; }
+
+.rv-cal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  text-transform: capitalize;
+}
+
+.rv-cal-top b { font-size: 1.1rem; }
+
+.rv-cal-top button {
+  width: 34px;
+  height: 34px;
+  background: #eef2f7;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.rv-cal-top button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.rv-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.rv-cal-dow {
+  padding: 0.3rem 0;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #7c8798;
+}
+
+.rv-cal-dia {
+  aspect-ratio: 1;
+  background: #fff;
+  border: 1px solid #dfe5ea;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.rv-cal-dia.hoy { border-color: var(--navy); }
+.rv-cal-dia.sel { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+.rv-cal-dia.pasado,
+.rv-cal-dia.cerrado {
+  background: #f1f3f7;
+  border-color: transparent;
+  color: #b4bcc9;
+  cursor: not-allowed;
+}
+
+.rv-cal-dia.bloqueado {
+  background: #fbe9eb;
+  border-color: #f3c6cb;
+  color: var(--red);
+  text-decoration: line-through;
+}
+
+.rv-cal-dia.bloqueado.sel { background: var(--red); color: #fff; }
+
+.rv-leyenda i.rojo { background: var(--red); }
+
+.rv-sinc {
+  margin-bottom: 1.2rem;
+  padding: 0.9rem;
+  background: #fbe9eb;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--red);
+}
+
+.rv-slots { max-height: 170px; }
