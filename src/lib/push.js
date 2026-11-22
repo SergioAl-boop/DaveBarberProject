@@ -7,17 +7,37 @@ const aUint8 = (b64) => {
 };
 
 export const pushSoportado = () =>
-  "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  "serviceWorker" in navigator &&
+  "PushManager" in window &&
+  "Notification" in window;
 
-export async function activarPush(userId) {
+
+let enCurso = null;
+
+export function activarPush() {
+  if (!enCurso) {
+    enCurso = _activarPush().finally(() => {
+      enCurso = null;
+    });
+  }
+  return enCurso;
+}
+
+async function _activarPush() {
   if (!pushSoportado()) {
-    throw new Error("Este navegador no soporta notificaciones. En iPhone, agrega el sitio a tu pantalla de inicio.");
+    throw new Error(
+      "Este navegador no soporta notificaciones. En iPhone, agrega el sitio a tu pantalla de inicio."
+    );
   }
 
   const permiso = await Notification.requestPermission();
-  if (permiso !== "granted") throw new Error("Permiso de notificaciones denegado");
+  if (permiso !== "granted") {
+    throw new Error("Permiso de notificaciones denegado");
+  }
 
-  const reg = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
+  const reg = await navigator.serviceWorker.register(
+    `${import.meta.env.BASE_URL}sw.js`
+  );
   await navigator.serviceWorker.ready;
 
   let sub = await reg.pushManager.getSubscription();
@@ -30,9 +50,10 @@ export async function activarPush(userId) {
 
   const j = sub.toJSON();
   const { error } = await supabase.rpc("guardar_suscripcion", {
-  p_endpoint: j.endpoint,
-  p_p256dh: j.keys.p256dh,
-  p_auth: j.keys.auth,
-   });
+    p_endpoint: j.endpoint,
+    p_p256dh: j.keys.p256dh,
+    p_auth: j.keys.auth,
+  });
+
   if (error) throw error;
 }
