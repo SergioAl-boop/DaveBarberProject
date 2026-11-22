@@ -29,9 +29,10 @@ export async function activarPush(userId) {
   }
 
   const j = sub.toJSON();
-  const { error } = await supabase.from("push_subscriptions").upsert(
-    { usuario_id: userId, endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth },
-    { onConflict: "endpoint" }
-  );
+  const { error } = await supabase.rpc("guardar_suscripcion", {
+  p_endpoint: j.endpoint,
+  p_p256dh: j.keys.p256dh,
+  p_auth: j.keys.auth,
+   });
   if (error) throw error;
 }

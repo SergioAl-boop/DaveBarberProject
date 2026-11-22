@@ -54,7 +54,7 @@ useEffect(() => {
           <h1>Hola, {user?.nombre?.split(" ")[0]}</h1>
         </div>
         <div className="cuenta-acciones">
-          <Link to="/">← Ver sitio</Link>
+          <Link to="/">← Volver</Link>
           <BotonNotificaciones className="cuenta-notif" />
           <button onClick={salir}>Cerrar sesión</button>
         </div>
