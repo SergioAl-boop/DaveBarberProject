@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import BotonNotificaciones from "../components/BotonNotificaciones";
 import "../styles/Cuenta.css";
+import CambiarPassword from "../components/CambiarPassword";
 
 const ESTADOS = {
   pendiente: "Pendiente",
@@ -91,6 +92,7 @@ useEffect(() => {
           </div>
         ))}
       </section>
+      <CambiarPassword />
     </main>
   );
 }
