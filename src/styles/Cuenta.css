@@ -74,3 +74,42 @@
   color: var(--navy);
   cursor: pointer;
 }
+
+
+.cp-form { display: grid; gap: 0.8rem; max-width: 360px; }
+
+.cp-form .pass-wrap { position: relative; }
+
+.cp-form input {
+  width: 100%;
+  padding: 0.8rem 2.8rem 0.8rem 0.8rem;
+  border: 1px solid #dfe5ea;
+  border-radius: 6px;
+}
+
+.cp-form .pass-ojo {
+  position: absolute;
+  top: 50%;
+  right: 0.4rem;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: none;
+  color: #7c8798;
+  cursor: pointer;
+}
+
+.cp-error { font-size: 0.85rem; color: #d91f2e; }
+
+.cp-botones { display: flex; align-items: center; gap: 0.8rem; }
+
+.cp-cancelar {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: #1c4b8f;
+  cursor: pointer;
+}

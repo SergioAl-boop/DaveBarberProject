@@ -93,15 +93,19 @@ export function AuthProvider({ children }) {
     throw new Error(error.message);
   }
 };
-
-const cambiarPassword = async (password) => {
-  const { error } = await supabase.auth.updateUser({ password });
-  if (error) throw new Error(error.message);
-  await supabase.auth.signOut();
+const olvidePassword = async ({ email, telefono, password }) => {
+  const { data, error } = await supabase.functions.invoke("olvide-password", {
+    body: { email, telefono, password },
+  });
+  if (error) {
+    let msg = error.message;
+    try { msg = (await error.context.json()).error || msg; } catch {  }
+    throw new Error(msg);
+  }
+  if (data?.error) throw new Error(data.error);
 };
-
   return (
-    <AuthContext.Provider value={{ user: perfil, cargando, login, registrar, logout, recuperar, cambiarPassword }}>
+    <AuthContext.Provider value={{ user: perfil, cargando, login, registrar, logout, olvidePassword }}>
       {children}
     </AuthContext.Provider>
   );

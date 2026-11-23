@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/logosololetras.png";
+import Toast from "./Toast";
+import logo from "../assets/logodave.jpeg";
 import "../styles/LoginModal.css";
 
 const Arrow = () => (
@@ -36,16 +37,19 @@ const validarRegistro = (f) => {
   return "";
 };
 
+const vacio = { nombre: "", telefono: "", email: "", password: "", confirmar: "" };
+
 export default function LoginModal({ onClose, onLogin }) {
-  const { login, registrar, recuperar } = useAuth();
+  const { login, registrar, olvidePassword } = useAuth();
   const navigate = useNavigate();
 
   const [paso, setPaso] = useState("login");
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
+  const [toast, setToast] = useState("");
   const [cargando, setCargando] = useState(false);
   const [verPass, setVerPass] = useState(false);
-  const [form, setForm] = useState({ nombre: "", telefono: "", email: "", password: "" });
+  const [form, setForm] = useState(vacio);
 
   const cambiar = (e) => {
     const { name, value } = e.target;
@@ -66,25 +70,30 @@ export default function LoginModal({ onClose, onLogin }) {
     setCargando(true);
 
     try {
-      if (paso === "recuperar") {
-        if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-          setError("Correo electrónico no válido");
-          return;
-        }
-        await recuperar(form.email);
-        setAviso("Si el correo está registrado, recibirás un enlace para cambiar tu contraseña.");
+      if (paso === "olvide") {
+        if (!/^\S+@\S+\.\S+$/.test(form.email)) return setError("Correo electrónico no válido");
+        if (form.telefono.length !== 10) return setError("El teléfono debe tener 10 dígitos");
+        if (form.password.length < 8) return setError("La contraseña debe tener al menos 8 caracteres");
+        if (form.password !== form.confirmar) return setError("Las contraseñas no coinciden");
+
+        await olvidePassword({
+          email: form.email,
+          telefono: form.telefono,
+          password: form.password,
+        });
+        setToast("Contraseña actualizada. Inicia sesión nuevamente");
+        setForm({ ...vacio, email: form.email });
+        setVerPass(false);
+        setPaso("login");
         return;
       }
 
       if (paso === "registro") {
         const msg = validarRegistro(form);
-        if (msg) {
-          setError(msg);
-          return;
-        }
+        if (msg) return setError(msg);
         await registrar(form);
         setAviso("Cuenta creada. Inicia sesión para continuar.");
-        setForm({ ...form, password: "" });
+        setForm({ ...form, password: "", confirmar: "" });
         setPaso("login");
         return;
       }
@@ -103,12 +112,35 @@ export default function LoginModal({ onClose, onLogin }) {
   const titulos = {
     login: ["Acceso", "Bienvenido de nuevo", "Ingresa tus datos para continuar."],
     registro: ["Nueva cuenta", "Crea tu perfil", "Regístrate una vez y reserva cuando quieras."],
-    recuperar: ["Recuperar acceso", "¿Olvidaste tu contraseña?", "Escribe tu correo y te enviaremos un enlace."],
+    olvide: ["Recuperar acceso", "Nueva contraseña", "Confirma tu correo y teléfono y elige una contraseña nueva."],
   };
   const [eyebrow, titulo, subtitulo] = titulos[paso];
 
+  const campoPass = (name, placeholder) => (
+    <div className="pass-wrap">
+      <input
+        name={name}
+        type={verPass ? "text" : "password"}
+        value={form[name]}
+        onChange={cambiar}
+        placeholder={placeholder}
+        required
+      />
+      <button
+        type="button"
+        className="pass-ojo"
+        onClick={() => setVerPass(!verPass)}
+        aria-label={verPass ? "Ocultar contraseña" : "Mostrar contraseña"}
+      >
+        <Ojo visible={verPass} />
+      </button>
+    </div>
+  );
+
   return (
     <div className="modal-overlay" onClick={onClose}>
+      {toast && <Toast mensaje={toast} onClose={() => setToast("")} duracion={5000} />}
+
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <aside className="modal-side">
           <img src={logo} alt="Dave Barber Studio" />
@@ -130,54 +162,42 @@ export default function LoginModal({ onClose, onLogin }) {
             <p className="modal-sub">{subtitulo}</p>
 
             {paso === "registro" && (
-              <>
-                <label>Nombre completo
-                  <input name="nombre" value={form.nombre} onChange={cambiar} placeholder="Ej. Daniel García" required />
-                </label>
-                <label>Teléfono
-                  <input
-                    name="telefono"
-                    type="tel"
-                    inputMode="numeric"
-                    maxLength={10}
-                    value={form.telefono}
-                    onChange={cambiar}
-                    placeholder="10 dígitos, ej. 9511234567"
-                    required
-                  />
-                </label>
-              </>
+              <label>Nombre completo
+                <input name="nombre" value={form.nombre} onChange={cambiar} placeholder="Ej. Daniel García" required />
+              </label>
             )}
 
             <label>Correo electrónico
               <input name="email" type="email" value={form.email} onChange={cambiar} placeholder="nombre@correo.com" required />
             </label>
 
-            {paso !== "recuperar" && (
-              <label>Contraseña
-                <div className="pass-wrap">
-                  <input
-                    name="password"
-                    type={verPass ? "text" : "password"}
-                    value={form.password}
-                    onChange={cambiar}
-                    placeholder="Mínimo 8 caracteres"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="pass-ojo"
-                    onClick={() => setVerPass(!verPass)}
-                    aria-label={verPass ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  >
-                    <Ojo visible={verPass} />
-                  </button>
-                </div>
+            {(paso === "registro" || paso === "olvide") && (
+              <label>Teléfono
+                <input
+                  name="telefono"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  value={form.telefono}
+                  onChange={cambiar}
+                  placeholder="10 dígitos, ej. 9511234567"
+                  required
+                />
+              </label>
+            )}
+
+            <label>{paso === "olvide" ? "Nueva contraseña" : "Contraseña"}
+              {campoPass("password", "Mínimo 8 caracteres")}
+            </label>
+
+            {paso === "olvide" && (
+              <label>Confirmar contraseña
+                {campoPass("confirmar", "Repite la contraseña")}
               </label>
             )}
 
             {paso === "login" && (
-              <button type="button" className="olvide" onClick={() => ir("recuperar")}>
+              <button type="button" className="olvide" onClick={() => ir("olvide")}>
                 ¿Olvidaste tu contraseña?
               </button>
             )}
@@ -190,8 +210,8 @@ export default function LoginModal({ onClose, onLogin }) {
                 ? "Procesando..."
                 : paso === "registro"
                 ? "Crear cuenta"
-                : paso === "recuperar"
-                ? "Enviar enlace"
+                : paso === "olvide"
+                ? "Guardar contraseña"
                 : "Entrar"}
               <Arrow />
             </button>
