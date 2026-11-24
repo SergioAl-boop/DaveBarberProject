@@ -10,9 +10,22 @@ const bonita = (iso) =>
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
+const NO_ACTIVAS = "(cancelada,no_asistio,completada,reagendar_pendiente)";
+
+const linkWhatsApp = (r) => {
+  const digitos = String(r.telefono || "").replace(/\D/g, "");
+  const tel = digitos.length === 10 ? "52" + digitos : digitos;
+  const enlace = `${window.location.origin}/reagendar/${r.id}`;
+  const texto =
+    `Hola ${r.nombre || ""}, el barbero no podrá atenderte el ${bonita(r.fecha)}. ` +
+    `Tu anticipo sigue vigente: elige otra fecha aquí ${enlace}`;
+  return `https://wa.me/${tel}?text=${encodeURIComponent(texto)}`;
+};
+
 export default function Disponibilidad() {
   const hoy = aISO(new Date());
   const [lista, setLista] = useState([]);
+  const [pendientes, setPendientes] = useState([]);
   const [desde, setDesde] = useState(hoy);
   const [hasta, setHasta] = useState(hoy);
   const [motivo, setMotivo] = useState("");
@@ -20,22 +33,26 @@ export default function Disponibilidad() {
   const [cargando, setCargando] = useState(false);
 
   const cargar = async () => {
-    const { data } = await supabase
-      .from("bloqueos").select("*").gte("fecha", hoy).order("fecha");
-    setLista(data || []);
+    const [bloqueos, porReagendar] = await Promise.all([
+      supabase.from("bloqueos").select("*").gte("fecha", hoy).order("fecha"),
+      supabase.from("reservas").select("*")
+        .eq("estado", "reagendar_pendiente").order("fecha"),
+    ]);
+    setLista(bloqueos.data || []);
+    setPendientes(porReagendar.data || []);
   };
   useEffect(() => { cargar(); }, []);
 
   const bloquear = async (e) => {
     e.preventDefault();
     setMsg("");
-    if (hasta < desde) return setMsg("❌ La fecha final no puede ser anterior a la inicial");
+    if (hasta < desde) return setMsg("Error: La fecha final no puede ser anterior a la inicial");
 
     const fechas = [];
     const fin = new Date(hasta + "T00:00:00");
     for (let d = new Date(desde + "T00:00:00"); d <= fin; d.setDate(d.getDate() + 1)) {
       fechas.push(aISO(d));
-      if (fechas.length > 366) return setMsg("❌ El rango es demasiado largo");
+      if (fechas.length > 366) return setMsg("Error: El rango es demasiado largo");
     }
 
     setCargando(true);
@@ -44,10 +61,10 @@ export default function Disponibilidad() {
         .from("reservas")
         .select("id", { count: "exact", head: true })
         .gte("fecha", desde).lte("fecha", hasta)
-        .not("estado", "in", "(cancelada,no_asistio)");
+        .not("estado", "in", NO_ACTIVAS);
 
       if (count > 0 &&
-        !confirm(`Hay ${count} cita(s) en esas fechas. Seguirán existiendo, así que tendrás que cancelarlas desde Agenda. ¿Bloquear de todos modos?`)) {
+        !confirm(`Hay ${count} cita(s) en esas fechas. Se marcarán como «Por reagendar» para que avises a los clientes. Su anticipo seguirá vigente. ¿Bloquear?`)) {
         return;
       }
 
@@ -57,11 +74,26 @@ export default function Disponibilidad() {
       );
       if (error) throw error;
 
-      setMsg(`✅ ${fechas.length} día(s) bloqueado(s)`);
+      let afectadas = 0;
+      if (count > 0) {
+        const { data, error: errRes } = await supabase
+          .from("reservas")
+          .update({ estado: "reagendar_pendiente" })
+          .gte("fecha", desde).lte("fecha", hasta)
+          .not("estado", "in", NO_ACTIVAS)
+          .select("id");
+        if (errRes) throw errRes;
+        afectadas = data?.length || 0;
+      }
+
+      setMsg(
+        `${fechas.length} día(s) bloqueado(s)` +
+        (afectadas ? `, ${afectadas} cita(s) por reagendar` : "")
+      );
       setMotivo("");
       cargar();
     } catch (err) {
-      setMsg("❌ " + err.message);
+      setMsg("Error: " + err.message);
     } finally {
       setCargando(false);
     }
@@ -69,7 +101,15 @@ export default function Disponibilidad() {
 
   const quitar = async (fecha) => {
     const { error } = await supabase.from("bloqueos").delete().eq("fecha", fecha);
-    if (error) setMsg("❌ " + error.message);
+    if (error) setMsg("Error: " + error.message);
+    else cargar();
+  };
+
+  const cancelar = async (id) => {
+    if (!confirm("¿Cancelar esta cita? Recuerda devolver el anticipo al cliente.")) return;
+    const { error } = await supabase
+      .from("reservas").update({ estado: "cancelada" }).eq("id", id);
+    if (error) setMsg("Error: " + error.message);
     else cargar();
   };
 
@@ -99,6 +139,31 @@ export default function Disponibilidad() {
           </div>
           {msg && <p className="admin-msg">{msg}</p>}
         </form>
+
+        {pendientes.length > 0 && (
+          <>
+            <h2>Por reagendar ({pendientes.length})</h2>
+            <p className="admin-hint">
+              Avísales por WhatsApp. Su anticipo sigue vigente para la nueva fecha.
+            </p>
+            <ul className="admin-lista">
+              {pendientes.map((r) => (
+                <li key={r.id}>
+                  <span>
+                    {r.nombre || "Cliente"} - {bonita(r.fecha)}
+                    {r.hora && <small>{r.hora}</small>}
+                  </span>
+                  <a href={linkWhatsApp(r)} target="_blank" rel="noreferrer">
+                    <button type="button">Avisar</button>
+                  </a>
+                  <button type="button" className="gris" onClick={() => cancelar(r.id)}>
+                    Cancelar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         <h2>Días bloqueados ({lista.length})</h2>
         {lista.length === 0 && <p className="admin-hint">No hay días bloqueados.</p>}
