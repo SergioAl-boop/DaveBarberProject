@@ -84,8 +84,10 @@ export default function AdminLayout() {
             ))}
           </nav>
 
-          <BotonNotificaciones className="adm-salir" />
-          <button className="adm-salir adm-salir-final" onClick={salir}>Cerrar sesión</button>
+          <div className="adm-pie">
+            <BotonNotificaciones className="adm-salir" />
+            <button className="adm-salir" onClick={salir}>Cerrar sesión</button>
+          </div>
         </div>
       </aside>
 
