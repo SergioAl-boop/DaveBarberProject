@@ -7,10 +7,10 @@ const aUint8 = (b64) => {
 };
 
 export const pushSoportado = () =>
+  typeof window !== "undefined" &&
   "serviceWorker" in navigator &&
   "PushManager" in window &&
   "Notification" in window;
-
 
 let enCurso = null;
 
@@ -30,25 +30,48 @@ async function _activarPush() {
     );
   }
 
+  // 1. Pedir permiso directo en el gesto del clic (obligatorio en iOS Safari)
   const permiso = await Notification.requestPermission();
   if (permiso !== "granted") {
     throw new Error("Permiso de notificaciones denegado");
   }
 
-  const reg = await navigator.serviceWorker.register(
-    `${import.meta.env.BASE_URL}sw.js`
-  );
+  // 2. Registrar SW asegurando el scope correcto
+  const baseUrl = import.meta.env.BASE_URL || "/";
+  const reg = await navigator.serviceWorker.register(`${baseUrl}sw.js`, {
+    scope: baseUrl,
+  });
+
+  // Esperar a que esté activo si aún se está instalando
+  if (reg.installing) {
+    await new Promise((resolve) => {
+      reg.installing.addEventListener("statechange", (e) => {
+        if (e.target.state === "activated") resolve();
+      });
+    });
+  }
   await navigator.serviceWorker.ready;
+
+  // 3. Obtener o crear suscripción Push
+  const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+  if (!vapidKey) {
+    throw new Error("Falta configurar VITE_VAPID_PUBLIC_KEY");
+  }
 
   let sub = await reg.pushManager.getSubscription();
   if (!sub) {
     sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: aUint8(import.meta.env.VITE_VAPID_PUBLIC_KEY),
+      applicationServerKey: aUint8(vapidKey),
     });
   }
 
+  // 4. Guardar en Supabase
   const j = sub.toJSON();
+  if (!j.keys?.p256dh || !j.keys?.auth) {
+    throw new Error("El navegador no generó las llaves de cifrado Push.");
+  }
+
   const { error } = await supabase.rpc("guardar_suscripcion", {
     p_endpoint: j.endpoint,
     p_p256dh: j.keys.p256dh,

@@ -7,24 +7,23 @@ import { CarritoProvider } from './context/CarritoContext'
 import './index.css'
 import App from './App.jsx'
 
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
+    const base = import.meta.env.BASE_URL;
+    navigator.serviceWorker.register(`${base}sw.js`, { scope: base });
   });
 }
 
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <ReservaProvider>
           <CarritoProvider>
-             <App />
+            <App />
           </CarritoProvider>
         </ReservaProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
-) 
+)
