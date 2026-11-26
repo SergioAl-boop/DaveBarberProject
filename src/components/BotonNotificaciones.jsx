@@ -1,65 +1,77 @@
 import { useEffect, useState } from "react";
+import OneSignal from "react-onesignal";
 import { useAuth } from "../context/AuthContext";
-import { activarPush, pushSoportado } from "../lib/push";
 
 export default function BotonNotificaciones({ className = "" }) {
   const { user } = useAuth();
-  const [estado, setEstado] = useState("inactivo");
-  const [error, setError] = useState("");
-  const [requiereInstalarIOS, setRequiereInstalarIOS] = useState(false);
+  const [suscrito, setSuscrito] = useState(false);
+  const [cargando, setCargando] = useState(false);
 
+  // Detectar si el navegador actual ya tiene permisos y suscripción activa
   useEffect(() => {
-    const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    //const esStandalone = true;
-   const esStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true;
+    const verificarEstado = () => {
+      try {
+        const permiso = OneSignal.Notifications?.permission;
+        const optedIn = OneSignal.User?.PushSubscription?.optedIn;
+        setSuscrito(Boolean(permiso && optedIn));
+      } catch {
+        // Ignorar si OneSignal aún está terminando de inicializar
+      }
+    };
 
-    if (esIOS && !esStandalone) {
-      setRequiereInstalarIOS(true);
-      return;
-    }
+    verificarEstado();
+    const timer = setTimeout(verificarEstado, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
-    if (!user || !pushSoportado()) return;
-
-    if ("Notification" in window && Notification.permission === "granted") {
-      activarPush(user.id)
-        .then(() => setEstado("activo"))
-        .catch((e) => setError(e.message || String(e)));
-    }
-  }, [user]);
-
-  if (!user) return null;
-
-  if (requiereInstalarIOS) {
-    return (
-      <div className="aviso-ios-push">
-        Para recibir avisos de tu cita en iPhone: toca <strong>Compartir</strong> (abajo) y luego{" "}
-        <strong>"Agregar a pantalla de inicio"</strong>.
-      </div>
-    );
-  }
-
-  const activar = async () => {
-    setError("");
+  const activarNotificaciones = async () => {
+    setCargando(true);
     try {
-      await activarPush(user.id);
-      setEstado("activo");
-    } catch (e) {
-      setError(e.message || String(e));
+      // 1. Pedir permiso nativo al navegador / sistema operativo
+      await OneSignal.Notifications.requestPermission();
+
+      // 2. Asegurar que el usuario quede vinculado a su UUID de Supabase
+      if (user?.id) {
+        await OneSignal.login(user.id);
+      }
+
+      // 3. Activar suscripción push explícitamente
+      await OneSignal.User.PushSubscription.optIn();
+
+      const permiso = OneSignal.Notifications?.permission;
+      setSuscrito(Boolean(permiso));
+    } catch (error) {
+      console.error("Error al activar notificaciones:", error);
+      alert("Asegúrate de permitir las notificaciones en los ajustes de tu navegador.");
+    } finally {
+      setCargando(false);
     }
   };
 
+  // Detectar si está en iPhone/iPad Safari sin instalar como PWA
+  const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const esStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+
+  if (esIOS && !esStandalone) {
+    return (
+      <span className={className} style={{ fontSize: "0.8rem", opacity: 0.85, cursor: "default" }}>
+        📲 iPhone: toca Compartir → &quot;Agregar a inicio&quot; para activar avisos
+      </span>
+    );
+  }
+
   return (
-    <>
-      {estado === "activo" ? (
-        <span className={className}>Notificaciones activas</span>
-      ) : (
-        <button className={className} onClick={activar}>
-          Activar notificaciones
-        </button>
-      )}
-      {error && <small className="error-push">{error}</small>}
-    </>
+    <button
+      type="button"
+      onClick={activarNotificaciones}
+      disabled={cargando || suscrito}
+      className={className}
+    >
+      {cargando
+        ? "Activando..."
+        : suscrito
+        ? " Notificaciones activas"
+        : " Activar notificaciones"}
+    </button>
   );
 }
