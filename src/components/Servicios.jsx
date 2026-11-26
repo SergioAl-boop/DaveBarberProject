@@ -12,11 +12,12 @@ export default function Servicios() {
   const { abrirReserva } = useReserva();
   const esAdmin = user?.rol === "admin";
 
-  const resolverImagen = (ruta) => {
-    if (!ruta) return "";
-    if (ruta.startsWith("http")) return ruta;
-    return `${import.meta.env.BASE_URL}${ruta.replace(/^\//, "")}`;
-  };
+ const resolverImagen = (ruta) => {
+  if (!ruta) return "";
+  if (ruta.startsWith("http")) return ruta;
+  const limpia = ruta.replace(/^(\.\/|\/|public\/)+/, "");
+  return `${import.meta.env.BASE_URL}${limpia}`;
+};
 
   useEffect(() => {
     supabase
