@@ -44,12 +44,10 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="hero-image">
-        <img
-          src="/assets/images/principal.png"
-          alt="Barbero trabajando"
-        />
-      </div>
+      <img
+  src={`${import.meta.env.BASE_URL}assets/images/principal.png`}
+  alt="Barbero trabajando"
+    />
     </section>
   );
 }

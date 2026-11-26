@@ -12,6 +12,12 @@ export default function Servicios() {
   const { abrirReserva } = useReserva();
   const esAdmin = user?.rol === "admin";
 
+  const resolverImagen = (ruta) => {
+    if (!ruta) return "";
+    if (ruta.startsWith("http")) return ruta;
+    return `${import.meta.env.BASE_URL}${ruta.replace(/^\//, "")}`;
+  };
+
   useEffect(() => {
     supabase
       .from("servicios")
@@ -61,7 +67,7 @@ export default function Servicios() {
         <div className="services-pista" ref={pista} onScroll={alScroll}>
           {servicios.map((s, index) => (
             <div className="service-card" key={s.id}>
-              <img src={s.imagen_url} alt={s.nombre} />
+              <img src={resolverImagen(s.imagen_url)} alt={s.nombre} />
 
               <div className="service-content">
                 <span className="service-number">0{index + 1}</span>
