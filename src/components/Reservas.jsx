@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { uuid } from "../lib/uuid";
 import "../styles/ReservaModal.css";
 
-const CLABE = "5428 7851 0417 4759";
+const CLABE = "6381 8000 0161 3637 03";
 const ANTICIPO = 100;
 const PASO_MIN = 60;
 const MESES_ADELANTE = 11;

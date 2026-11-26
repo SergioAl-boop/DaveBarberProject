@@ -1,4 +1,8 @@
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { supabase } from "./lib/supabase"  
+import { iniciarOneSignal } from "./lib/onesignal";
+
 import Home from "./pages/Home";
 import Cuenta from "./pages/Cuenta";
 import RutaAdmin from "./components/RutaAdmin";
@@ -16,6 +20,23 @@ import Disponibilidad from "./pages/admin/Disponibilidad";
 
 
 function App() {
+
+  useEffect(() => {
+   
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      iniciarOneSignal(session?.user?.id);
+    });
+
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user?.id) {
+        iniciarOneSignal(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
