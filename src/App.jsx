@@ -8,7 +8,7 @@ import Cuenta from "./pages/Cuenta";
 import RutaAdmin from "./components/RutaAdmin";
 import RutaCliente from "./components/RutaCliente";
 import AdminLayout from "./components/AdminLayout";
-import Resumen from "./pages/admin/Resumen";  
+import Resumen from "./pages/admin/Resumen"
 import { AdminProductos, AdminPortafolio } from "./pages/admin/Catalogos";
 import Agenda from "./pages/admin/Agenda";
 import Clientes from "./pages/admin/Clientes";
