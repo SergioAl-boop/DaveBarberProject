@@ -6,7 +6,7 @@ import { useCarrito } from "../context/CarritoContext";
 import { useReserva } from "../context/ReservaContext";
 import "../styles/Carrito.css";
 
-const CLABE = "5428 7851 0417 4759";
+const CLABE = "6381 8000 0161 3637 03";
 
 export default function CarritoModal({ onClose }) {
   const { user } = useAuth();

@@ -4,7 +4,7 @@ let sdkListo = false;
 let iniciando = false;
 
 export async function iniciarOneSignal(userId) {
-  // Evitar errores en localhost ya que OneSignal está configurado para GitHub Pages
+  
   if (
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1"

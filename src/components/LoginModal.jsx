@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Toast from "./Toast";
-import logo from "../assets/logodave.jpeg";
+import logo from "../assets/logosololetras.png";
 import "../styles/LoginModal.css";
 
 const Arrow = () => (

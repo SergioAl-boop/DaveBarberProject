@@ -21,7 +21,6 @@
   margin-bottom: 50px;
 }
 
-/* ---------- CARRUSEL ---------- */
 .services-carrusel { position: relative; }
 
 .services-pista {
@@ -173,7 +172,7 @@
   color: #4b5563;
 }
 
-/* ---------- RESPONSIVE ---------- */
+
 @media (max-width: 1024px) {
   .services-pista .service-card { flex-basis: calc((100% - 25px) / 2); }
 

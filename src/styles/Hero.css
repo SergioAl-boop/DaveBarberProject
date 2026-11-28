@@ -7,7 +7,7 @@
   --text-muted: #b8c2d6;
 }
 
-/* ---------- HERO ---------- */
+
 .hero {
   position: relative;
   display: grid;
@@ -20,7 +20,7 @@
   overflow: hidden;
 }
 
-/* líneas diagonales sutiles */
+
 .hero::before {
   content: "";
   position: absolute;
@@ -68,7 +68,7 @@
   color: var(--text-muted);
 }
 
-/* ---------- BOTONES ---------- */
+
 .hero-buttons {
   display: flex;
   gap: 1rem;
@@ -101,7 +101,7 @@
 }
 .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); }
 
-/* ---------- STATS ---------- */
+
 .stats {
   display: flex;
   gap: 3rem;
@@ -123,7 +123,7 @@
   color: var(--text-muted);
 }
 
-/* ---------- IMAGEN ---------- */
+
 .hero-image {
   position: relative;
   display: flex;
@@ -141,7 +141,7 @@
   border-radius: 0 0 24px 24px;
 }
 
-/* ---------- TARJETA PRÓXIMO ESPACIO ---------- */
+
 .next-slot {
   position: absolute;
   right: 3rem;
@@ -180,7 +180,7 @@
   font-size: 1.4rem;
 }
 
-/* ---------- RESPONSIVE ---------- */
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;

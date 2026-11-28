@@ -1,3 +1,8 @@
+.modal,
+.modal * {
+  box-sizing: border-box;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -40,11 +45,12 @@
 
 .modal-main {
   position: relative;
+  min-width: 0;
   padding: 3rem 2rem 2rem;
+  overflow-x: hidden;
   overflow-y: auto;
   color: var(--navy);
 }
-
 .modal-close {
   position: absolute;
   top: 1rem;
@@ -98,9 +104,11 @@
 .modal input {
   display: block;
   width: 100%;
+  min-width: 0;
   margin-top: 0.4rem;
   padding: 0.8rem;
   border: 1px solid #dfe5ea;
+  border-radius: 6px;
   font: 400 0.8rem "DM Sans", sans-serif;
 }
 
@@ -165,8 +173,15 @@
   .modal-main { padding: 3rem 1.4rem 1.6rem; }
 }
 
-.pass-wrap { position: relative; }
-.pass-wrap input { padding-right: 2.8rem; }
+.pass-wrap {
+  position: relative;
+  margin-top: 0.4rem;
+}
+
+.pass-wrap input {
+  margin-top: 0;
+  padding-right: 2.8rem;
+}
 
 .pass-ojo {
   position: absolute;
@@ -177,7 +192,8 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  margin-top: 0.2rem;
+  margin: 0;
+  padding: 0;
   background: none;
   border: none;
   color: #7c8798;

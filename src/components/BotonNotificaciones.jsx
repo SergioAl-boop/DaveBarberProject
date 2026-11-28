@@ -7,7 +7,7 @@ export default function BotonNotificaciones({ className = "" }) {
   const [suscrito, setSuscrito] = useState(false);
   const [cargando, setCargando] = useState(false);
 
-  // Detectar si el navegador actual ya tiene permisos y suscripción activa
+ 
   useEffect(() => {
     const verificarEstado = () => {
       try {
@@ -15,7 +15,7 @@ export default function BotonNotificaciones({ className = "" }) {
         const optedIn = OneSignal.User?.PushSubscription?.optedIn;
         setSuscrito(Boolean(permiso && optedIn));
       } catch {
-        // Ignorar si OneSignal aún está terminando de inicializar
+       
       }
     };
 
@@ -27,15 +27,15 @@ export default function BotonNotificaciones({ className = "" }) {
   const activarNotificaciones = async () => {
     setCargando(true);
     try {
-      // 1. Pedir permiso nativo al navegador / sistema operativo
+
       await OneSignal.Notifications.requestPermission();
 
-      // 2. Asegurar que el usuario quede vinculado a su UUID de Supabase
+    
       if (user?.id) {
         await OneSignal.login(user.id);
       }
 
-      // 3. Activar suscripción push explícitamente
+    
       await OneSignal.User.PushSubscription.optIn();
 
       const permiso = OneSignal.Notifications?.permission;
@@ -48,7 +48,7 @@ export default function BotonNotificaciones({ className = "" }) {
     }
   };
 
-  // Detectar si está en iPhone/iPad Safari sin instalar como PWA
+
   const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const esStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
 
