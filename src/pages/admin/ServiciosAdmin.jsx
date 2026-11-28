@@ -84,6 +84,7 @@ export default function ServiciosAdmin() {
     if (!confirm(`¿Eliminar "${s.nombre}" definitivamente?`)) return;
     const { error } = await supabase.from("servicios").delete().eq("id", s.id);
     if (error) {
+      console.log("code:", error.code, "| message:", error.message, "| details:", error.details);
       setMsg(
         error.code === "23503"
           ? " Este servicio ya tiene citas registradas. Mejor ocúltalo para conservar el historial."

@@ -19,6 +19,7 @@ export default function Servicios() {
   return `${import.meta.env.BASE_URL}${limpia}`;
 };
 
+
   useEffect(() => {
     supabase
       .from("servicios")

@@ -81,7 +81,7 @@ export default function Reservas({ onClose }) {
     return "libre";
   };
 
-  // Al cargar, selecciona el primer día libre
+
   useEffect(() => {
     if (!datosListos || fecha) return;
     const base = new Date();
@@ -94,7 +94,7 @@ export default function Reservas({ onClose }) {
         break;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [datosListos]);
 
   useEffect(() => {
