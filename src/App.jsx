@@ -9,7 +9,6 @@ import RutaAdmin from "./components/RutaAdmin";
 import RutaCliente from "./components/Rutacliente";
 import AdminLayout from "./components/AdminLayout";
 import Resumen from "./pages/admin/Resumen";
-import Proximamente from "./pages/admin/Proximamente";
 import { AdminProductos, AdminPortafolio } from "./pages/admin/Catalogos";
 import Agenda from "./pages/admin/Agenda";
 import Clientes from "./pages/admin/Clientes";
